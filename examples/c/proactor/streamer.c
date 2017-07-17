@@ -31,6 +31,8 @@
 #include <proton/proactor.h>
 #include <proton/sasl.h>
 #include <proton/transport.h>
+#include "pncompat/misc_defs.h"
+#include "pncompat/misc_funcs.inc"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,6 +48,12 @@
 #define OUTGOING_SESSION_CAP 16*FRAME /* Many endpoints won't set a limit, no more than this */
 #define BUFFER 4*FRAME           /* Internal buffer used to transfer messages */
 #define FLOW_WINDOW 100          /* Message-count flow control */
+
+#define fatal(...) do {                                 \
+    fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);     \
+    fprintf(stderr, __VA_ARGS__);                       \
+    fprintf(stderr, "\n");                              \
+  } while(0)
 
 /* Generate unique delivery tags  */
 static int global_dtag = 0;
@@ -114,6 +122,152 @@ address_t* addresses_get(addresses_t *addresses, const char* name) {
   return a;
 }
 
+/* log object namer - shorter names than addresses */
+typedef struct log_obj_namer_s {
+    struct log_obj_namer_s *next;
+    char                   *name;
+    void                   *obj_ptr;
+} log_obj_namer_t;
+
+typedef struct log_obj_namers_s {
+  pthread_mutex_t  lock;
+  const char      *prefix;
+  log_obj_namer_t *obj_namers;
+  int              next_id;
+} log_obj_namers_t;
+
+log_obj_namers_t *log_obj_namers(const char *prefix) {
+    log_obj_namers_t *lon = (log_obj_namers_t *)malloc(sizeof(log_obj_namers_t));
+    if (lon == 0)
+        fatal("failed to allocate namer for %s" , prefix);
+    pthread_mutex_init(&lon->lock, NULL);
+    lon->prefix = prefix;
+    lon->obj_namers = 0;
+    lon->next_id = 1;
+    return lon;
+}
+
+void log_obj_namers_destroy(log_obj_namers_t *namer) {
+    pthread_mutex_destroy(&namer->lock);
+    // TODO:
+}
+
+/* Given a pointer, return the short name from List
+ * or add a new name
+ */
+const char * log_obj_name_of(log_obj_namers_t *name_pool, void *ptr) {
+    pthread_mutex_lock(&name_pool->lock);
+    log_obj_namer_t *last = 0;
+    log_obj_namer_t *curr =  name_pool->obj_namers;
+    while (curr) {
+        if (curr->obj_ptr == ptr) {
+            break;
+        }
+        last = curr;
+        curr = curr->next;
+    }
+    if (curr == 0) {
+        curr = (log_obj_namer_t*)malloc(sizeof(log_obj_namer_t));
+        curr->next = 0;
+        curr->name = (char *)malloc(strlen(name_pool->prefix) + 20);  // "prefix-" + int-as-string
+        if (ptr == (void*)0) {
+            curr->name[0] = '\0';
+        } else {
+            strncpy(curr->name, name_pool->prefix, strlen(name_pool->prefix));
+            sprintf(&curr->name[strlen(name_pool->prefix)], "%d", name_pool->next_id++);
+        }
+        curr->obj_ptr = ptr;
+        if (last == 0)
+            name_pool->obj_namers = curr;
+        else
+            last->next = curr;
+    }
+    pthread_mutex_unlock(&name_pool->lock);
+    return curr->name;
+}
+
+
+/* Event csv logger */
+static pn_timestamp_t tboot = 0;
+static log_obj_namers_t *log_transports = 0;
+static log_obj_namers_t *log_sessions   = 0;
+static log_obj_namers_t *log_links      = 0;
+static log_obj_namers_t *log_deliveries = 0;
+
+
+void log_this_init(void) {
+    tboot = time_now();
+    printf("Time(S), note, event, "
+        "xport, maxFrame, "
+        "ssn, ssnInCap, ssnOutWin, ssnInBytes, ssnOutBytes, "
+        "link, linkName, dir, maxMsg, remMaxMsg, curDelivery, credit, avail, q'd, unsetld\n");
+    log_transports = log_obj_namers("xport-");
+    log_sessions   = log_obj_namers("sessn-");
+    log_links      = log_obj_namers("link-");
+    log_deliveries = log_obj_namers("dlvry-");
+}
+
+void log_this(pn_event_t *event, const char * note) {
+    pn_timestamp_t rtnow = time_now() - tboot;
+    pn_timestamp_t tsec  = rtnow / 1000;
+    pn_timestamp_t tms   = rtnow % 1000;
+
+    const char * ename = pn_event_type_name(pn_event_type(event));
+
+    pn_transport_t * xport = pn_event_transport(event);
+    uint32_t max_frame = 0;
+    if (!!xport) {
+        max_frame = pn_transport_get_max_frame(xport);
+    }
+    
+    pn_session_t * sessn = pn_event_session(event);
+    size_t incoming_capacity = 0;
+    size_t outgoing_window   = 0;
+    size_t incoming_bytes    = 0;
+    size_t outgoing_bytes    = 0;
+    if (!!sessn) {
+        incoming_capacity = pn_session_get_incoming_capacity(sessn);
+        outgoing_window   = pn_session_get_outgoing_window(sessn);
+        incoming_bytes    = pn_session_incoming_bytes(sessn);
+        outgoing_bytes    = pn_session_outgoing_bytes(sessn);
+    }
+    
+    pn_link_t * link = pn_event_link(event);
+    const char * linkname      = "";
+    bool is_rcvr                = true;
+    const char * rcvr_status    = "recvr";
+    uint64_t max_message        = 0;
+    uint64_t remote_max_message = 0;
+    pn_delivery_t * current     = 0;
+    int credit                  = 0;
+    int available               = 0;
+    int queued                  = 0;
+    int unsettled               = 0;
+    if (!!link) {
+        linkname           = pn_link_name(link);
+        is_rcvr            = pn_link_is_receiver(link);
+        rcvr_status        = is_rcvr ? "recvr" : "sendr";
+        max_message        = pn_link_max_message_size(link);
+        remote_max_message = pn_link_remote_max_message_size(link);
+        current            = pn_link_current(link);
+        credit             = pn_link_credit(link);
+        available          = pn_link_available(link);
+        queued             = pn_link_queued(link);
+        unsettled          = pn_link_unsettled(link);
+    }
+    
+    printf("%ld.%03ld, %s, %s, "
+        "%s, %d, "
+        "%s, %ld, %ld, %ld, %ld, "
+        "%s, %s, %s, %lu, %lu, %s, %d, %d, %d, %d\n",
+        tsec, tms, note, ename,
+        log_obj_name_of(log_transports, (void*)xport), max_frame,
+        log_obj_name_of(log_sessions,   (void*)sessn), incoming_capacity, outgoing_window, incoming_bytes, outgoing_bytes,
+        log_obj_name_of(log_links,      (void*)link), linkname, rcvr_status, max_message, remote_max_message, 
+        log_obj_name_of(log_deliveries, (void*)current), credit, available, queued, unsettled
+        );
+}
+
 /* Server state */
 typedef struct streamer_t {
   pn_proactor_t *proactor;
@@ -130,12 +284,6 @@ void streamer_stop(streamer_t *streamer) {
   streamer->finished = true;
   pn_proactor_interrupt(streamer->proactor);
 }
-
-#define fatal(...) do {                                 \
-    fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);     \
-    fprintf(stderr, __VA_ARGS__);                       \
-    fprintf(stderr, "\n");                              \
-  } while(0)
 
 static address_t *link_address(pn_link_t *l) {
   address_t *a = (address_t*)pn_link_get_context(l);
@@ -248,6 +396,7 @@ static void address_send(address_t *a) {
 }
 
 static void handle(streamer_t* s, pn_event_t* e) {
+  log_this(e, "ENTER");
   pn_connection_t *c = pn_event_connection(e);
 
   switch (pn_event_type(e)) {
@@ -376,6 +525,7 @@ static void handle(streamer_t* s, pn_event_t* e) {
    default:
     break;
   }
+  log_this(e, "EXIT ");
 }
 
 static void* streamer_thread(void *void_streamer) {
@@ -400,6 +550,8 @@ int main(int argc, char **argv) {
   int i = 1;
   const char *host = (argc > i) ? argv[i++] : "";
   const char *port = (argc > i) ? argv[i++] : "amqp";
+  
+  log_this_init();
 
   /* Listen on addr */
   char addr[PN_MAX_ADDR];
