@@ -54,7 +54,7 @@ static void check_condition(pn_event_t *e, pn_condition_t *cond) {
   }
 }
 
-/* Create a message with a map { "sequence" : number } encode it and return the encoded buffer. */
+/// HACK ALERT /* Create a message with a map { "sequence" : number } encode it and return the encoded buffer. */
 static pn_bytes_t encode_message(app_data_t* app) {
   /* Construct a message with the map { "sequence": app.sent } */
   pn_message_t* message = pn_message();
@@ -62,13 +62,21 @@ static pn_bytes_t encode_message(app_data_t* app) {
   pn_data_t* body = pn_message_body(message);
   pn_data_put_map(body);
   pn_data_enter(body);
-  pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
+
+  //pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
+  static const size_t msg_size = 4 * 1024 * 1024;
+  char * mbufptr = (char *)malloc(msg_size);
+  for (size_t i=0; i<msg_size; i++)
+      mbufptr[i] = '.';
+  pn_data_put_string(body, pn_bytes(msg_size-1, mbufptr));
+
   pn_data_put_int(body, app->sent); /* The sequence number */
   pn_data_exit(body);
 
   /* encode the message, expanding the encode buffer as needed */
   if (app->message_buffer.start == NULL) {
-    static const size_t initial_size = 128;
+//  static const size_t initial_size = 128;
+    static const size_t initial_size = 4 * 1024 * 1024 + 128;
     app->message_buffer = pn_rwbytes(initial_size, (char*)malloc(initial_size));
   }
   /* app->message_buffer is the total buffer space available. */
