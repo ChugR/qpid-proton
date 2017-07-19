@@ -172,18 +172,23 @@ static inline size_t min(size_t a, size_t b) { return a < b ? a : b; }
 
 static inline size_t buffer_free(size_t size, size_t max) { return max > size ? max - size : 0; }
 
+#define PRINTF printf
+
 /* Receive data from current message if we can, if not the sender will WAKE us when we can */
 static void address_receive(address_t *a) {
   pn_delivery_t *d = pn_link_current(a->receiver);
   pthread_mutex_lock(&a->lock);
+  PRINTF(", address_receive: entry\n");
   if (!a->started) {
     pn_link_flow(a->receiver, FLOW_WINDOW);
     a->started = true;
+    PRINTF(", address_receive: started\n");
   } else if (d && pn_delivery_readable(d) && !a->end_of_message) {
       bool wake = false;
       while (pn_delivery_pending(d) > 0 && a->size < BUFFER) {
         size_t size = min(BUFFER - a->size, pn_delivery_pending(d));
         ssize_t recv = pn_link_recv(a->receiver, a->data + a->size, size);
+        PRINTF(", address_receive: computed size: %zu, link_recv size:%zd\n", size, recv);
         if (recv >= 0) {
           a->size += recv;
           wake = recv;
@@ -199,13 +204,16 @@ static void address_receive(address_t *a) {
           pn_link_flow(a->receiver, 1);
           a->end_of_message = true;
           wake = true;
+          PRINTF(", address_receive: end of message\n");
         }
       } else {                  /* No buffer space, need wakeup when there is some */
         a->receiver_blocked = true;
+        PRINTF(", address_receive: receiver blocked\n");
       }
       if (wake && a->sender_blocked) {
         a->sender_blocked = false;
         pn_connection_wake(pn_session_connection(pn_link_session(a->sender)));
+        PRINTF(", address_receive: unblock sender, wake connection\n");
       }
   }
   pthread_mutex_unlock(&a->lock);
@@ -216,37 +224,45 @@ static void address_send(address_t *a) {
   bool wake = false;
 
   pthread_mutex_lock(&a->lock);
+  PRINTF(", address_send: entry\n");
   if (a->size) {       /* There is something to send */
     /* Start a new delivery if there isn't one in progress */
+    PRINTF(", address_send: something to send. size=%zu\n", a->size);
     if (!d) {
       pthread_mutex_lock(&dtag_lock);
       int dtag = global_dtag++;
       pthread_mutex_unlock(&dtag_lock);
       d = pn_delivery(a->sender, pn_dtag((char*)&dtag, sizeof(dtag)));
+      PRINTF(", address_send: create delivery\n");
     }
     /* Send as much as possible without exceeding outgoing session limit */
     size_t pending = pn_session_outgoing_bytes(pn_link_session(a->sender));
     ssize_t size = min(buffer_free(pending, a->session_out), a->size);
     ssize_t sent = pn_link_send(a->sender, a->data, size);
+    PRINTF(", address_send: pending:%zu, size:%zd, sent:%zd\n", pending, size, sent);
     if (sent >= 0) {
       memmove(a->data, a->data + sent, a->size - sent);
       a->size -= sent;
       wake = sent;
+      PRINTF(", address_send: a->size reduced to: %zu\n", a->size);
     } else {
       fatal("pn_link_send %s: %s" , a->name, pn_code(sent));
     }
   } else {                      /* Nothing to send, need wakeup when there is data */
     a->sender_blocked = true;
+    PRINTF(", address_send: sender blocked\n");
   }
   /* Check if the message is complete */
   if (a->end_of_message && a->size == 0) {
     pn_delivery_settle(d);
     a->end_of_message = false;
     wake = true;
+    PRINTF(", address_send: message complete\n");
   }
   if (wake && a->receiver_blocked) {
     a->receiver_blocked = false;
     pn_connection_wake(pn_session_connection(pn_link_session(a->receiver)));
+    PRINTF(", address_send: unblock receiver\n");
   }
   pthread_mutex_unlock(&a->lock);
 }

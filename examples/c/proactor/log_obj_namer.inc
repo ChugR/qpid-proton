@@ -94,8 +94,8 @@ void log_this_init(void) {
     tboot = time_now();
     printf("Time(S), note, event, "
         "xport, maxFrame, "
-        "ssn, ssnInCap, ssnOutWin, ssnInBytes, ssnOutBytes, "
-        "link, linkName, dir, maxMsg, remMaxMsg, curDelivery, credit, avail, q'd, unsetld\n");
+        "session, incomingCap, outgoingWindow, inBytes, ssnOutBytes, "
+        "link, linkName, dir, maxMsg, remoteMaxMsg, curDelivery, credit, avail, q'd, unsetld\n");
     log_transports = log_obj_namers("xport-");
     log_sessions   = log_obj_namers("sessn-");
     log_links      = log_obj_namers("link-");
@@ -104,8 +104,8 @@ void log_this_init(void) {
 
 void log_this(pn_event_t *event, const char * note) {
     pn_timestamp_t rtnow = time_now() - tboot;
-    pn_timestamp_t tsec  = rtnow / 1000;
-    pn_timestamp_t tms   = rtnow % 1000;
+    double drtnow = rtnow;
+    drtnow /= 1000.0;
 
     const char * ename = pn_event_type_name(pn_event_type(event));
 
@@ -151,11 +151,11 @@ void log_this(pn_event_t *event, const char * note) {
         unsettled          = pn_link_unsettled(link);
     }
     
-    printf("%ld.%03ld, %s, %s, "
+    printf("%.3f, %s, %s, "
         "%s, %d, "
         "%s, %ld, %ld, %ld, %ld, "
         "%s, %s, %s, %lu, %lu, %s, %d, %d, %d, %d\n",
-        tsec, tms, note, ename,
+        drtnow, note, ename,
         log_obj_name_of(log_transports, (void*)xport), max_frame,
         log_obj_name_of(log_sessions,   (void*)sessn), incoming_capacity, outgoing_window, incoming_bytes, outgoing_bytes,
         log_obj_name_of(log_links,      (void*)link), linkname, rcvr_status, max_message, remote_max_message, 

@@ -28,8 +28,21 @@
 #include <proton/session.h>
 #include <proton/transport.h>
 
+#include "thread.h"
+#include "pncompat/misc_defs.h"
+#include "pncompat/misc_funcs.inc"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#define fatal(...) do {                                 \
+    fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);     \
+    fprintf(stderr, __VA_ARGS__);                       \
+    fprintf(stderr, "\n");                              \
+  } while(0)
+
+#include "log_obj_namer.inc"
 
 typedef struct app_data_t {
   const char *host, *port;
@@ -98,6 +111,7 @@ static pn_bytes_t encode_message(app_data_t* app) {
 
 /* Returns true to continue, false if finished */
 static bool handle(app_data_t* app, pn_event_t* event) {
+  log_this(event, "ENTER");
   switch (pn_event_type(event)) {
 
    case PN_CONNECTION_INIT: {
@@ -164,10 +178,12 @@ static bool handle(app_data_t* app, pn_event_t* event) {
     break;
 
    case PN_PROACTOR_INACTIVE:
+    log_this(event, "EXIT ");
     return false;
 
    default: break;
   }
+  log_this(event, "EXIT ");
   return true;
 }
 
@@ -192,6 +208,8 @@ int main(int argc, char **argv) {
   app.port = (argc > 1) ? argv[i++] : "amqp";
   app.amqp_address = (argc > i) ? argv[i++] : "example";
   app.message_count = (argc > i) ? atoi(argv[i++]) : 10;
+
+  log_this_init();
 
   app.proactor = pn_proactor();
   char addr[PN_MAX_ADDR];
