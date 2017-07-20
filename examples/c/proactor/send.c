@@ -142,7 +142,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
 
        PRINTF(", pn_delivery(sender; pn_dtag((const char *)&app->sent; sizeof(app->sent)));\n");
        PRINTF(", pn_bytes_t msgbuf = encode_message(app);\n");
-       PRINTF(", pn_link_send(sender, msgbuf.start, msgbuf.size:%zd);\n", msgbuf.size);
+       PRINTF(", pn_link_send(sender; msgbuf.start; msgbuf.size:%zd);\n", msgbuf.size);
        PRINTF(", pn_link_advance(sender);\n");
 
      }

@@ -94,8 +94,8 @@ void log_this_init(void) {
     tboot = time_now();
     printf("Time(S), note, event, "
         "xport, maxFrame, "
-        "session, incomingCap, outgoingWindow, inBytes, ssnOutBytes, "
-        "link, linkName, dir, maxMsg, remoteMaxMsg, curDelivery, credit, avail, q'd, unsetld\n");
+        "session, incoming_capacty, outgoing_window, incoming_bytes, outgoing_bytes, "
+        "link, linkName, link_is_receiver, max_message_size, remote_max_message_size, current, credit, available, queued, unsettled\n");
     log_transports = log_obj_namers("xport-");
     log_sessions   = log_obj_namers("sessn-");
     log_links      = log_obj_namers("link-");
@@ -130,7 +130,7 @@ void log_this(pn_event_t *event, const char * note) {
     pn_link_t * link = pn_event_link(event);
     const char * linkname      = "";
     bool is_rcvr                = true;
-    const char * rcvr_status    = "recvr";
+    const char * rcvr_status    = "";
     uint64_t max_message        = 0;
     uint64_t remote_max_message = 0;
     pn_delivery_t * current     = 0;
