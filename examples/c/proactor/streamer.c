@@ -182,13 +182,14 @@ static void address_receive(address_t *a) {
   if (!a->started) {
     pn_link_flow(a->receiver, FLOW_WINDOW);
     a->started = true;
-    PRINTF(", address_receive: started\n");
+    PRINTF(", address_receive: started: pn_link_flow(FLOW_WINDOW=%d)\n", FLOW_WINDOW);
   } else if (d && pn_delivery_readable(d) && !a->end_of_message) {
       bool wake = false;
       while (pn_delivery_pending(d) > 0 && a->size < BUFFER) {
+        PRINTF(", pending:%zu = pn_delivery_pending()\n", pn_delivery_pending(d));
         size_t size = min(BUFFER - a->size, pn_delivery_pending(d));
         ssize_t recv = pn_link_recv(a->receiver, a->data + a->size, size);
-        PRINTF(", address_receive: computed size: %zu, link_recv size:%zd\n", size, recv);
+        PRINTF(", address_receive: recv:%zd = pn_link_recv(size:%zu)\n", recv, size);
         if (recv >= 0) {
           a->size += recv;
           wake = recv;
@@ -197,14 +198,22 @@ static void address_receive(address_t *a) {
         }
       }
       if (pn_delivery_pending(d) == 0) {
+          PRINTF(", 0 = pn_delivery_pending()\n");
         if (!pn_delivery_partial(d)) { /* End of message */
+          PRINTF(", false = pn_delivery_partial()\n");
           pn_link_advance(a->receiver);
           pn_delivery_update(d, PN_ACCEPTED);
           pn_delivery_settle(d);
           pn_link_flow(a->receiver, 1);
+
+          PRINTF(", pn_link_advance(a->receiver);");
+          PRINTF(", pn_delivery_update(d; PN_ACCEPTED);");
+          PRINTF(", pn_delivery_settle(d);");
+          PRINTF(", pn_link_flow(a->receiver; 1);");
+
           a->end_of_message = true;
           wake = true;
-          PRINTF(", address_receive: end of message\n");
+          PRINTF(", address_receive: end of message = true; wake = true\n");
         }
       } else {                  /* No buffer space, need wakeup when there is some */
         a->receiver_blocked = true;
@@ -213,7 +222,7 @@ static void address_receive(address_t *a) {
       if (wake && a->sender_blocked) {
         a->sender_blocked = false;
         pn_connection_wake(pn_session_connection(pn_link_session(a->sender)));
-        PRINTF(", address_receive: unblock sender, wake connection\n");
+        PRINTF(", address_receive: unblock sender; pn_connection_wake()\n");
       }
   }
   pthread_mutex_unlock(&a->lock);
@@ -233,13 +242,14 @@ static void address_send(address_t *a) {
       int dtag = global_dtag++;
       pthread_mutex_unlock(&dtag_lock);
       d = pn_delivery(a->sender, pn_dtag((char*)&dtag, sizeof(dtag)));
-      PRINTF(", address_send: create delivery\n");
+      PRINTF(", address_send: create delivery pn_delivery()\n");
     }
     /* Send as much as possible without exceeding outgoing session limit */
     size_t pending = pn_session_outgoing_bytes(pn_link_session(a->sender));
+    PRINTF(", address_send: pending:%zu = pn_session_outgoing_bytes()\n", pending);
     ssize_t size = min(buffer_free(pending, a->session_out), a->size);
     ssize_t sent = pn_link_send(a->sender, a->data, size);
-    PRINTF(", address_send: pending:%zu, size:%zd, sent:%zd\n", pending, size, sent);
+    PRINTF(", address_send: sent:%zu = pn_link_send(size=%zu)\n", sent, size);
     if (sent >= 0) {
       memmove(a->data, a->data + sent, a->size - sent);
       a->size -= sent;
@@ -257,12 +267,12 @@ static void address_send(address_t *a) {
     pn_delivery_settle(d);
     a->end_of_message = false;
     wake = true;
-    PRINTF(", address_send: message complete\n");
+    PRINTF(", address_send: message complete: pn_delivery_settle()\n");
   }
   if (wake && a->receiver_blocked) {
     a->receiver_blocked = false;
     pn_connection_wake(pn_session_connection(pn_link_session(a->receiver)));
-    PRINTF(", address_send: unblock receiver\n");
+    PRINTF(", address_send: unblock receiver: pn_connection_wake()\n");
   }
   pthread_mutex_unlock(&a->lock);
 }

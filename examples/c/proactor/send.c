@@ -44,6 +44,8 @@
 
 #include "log_obj_namer.inc"
 
+#define PRINTF printf
+
 typedef struct app_data_t {
   const char *host, *port;
   const char *amqp_address;
@@ -130,12 +132,19 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      /* The peer has given us some credit, now we can send messages */
      pn_link_t *sender = pn_event_link(event);
      while (pn_link_credit(sender) > 0 && app->sent < app->message_count) {
+       PRINTF(", credit:%d = pn_link_credit()\n", pn_link_credit(sender));
        ++app->sent;
        // Use sent counter as unique delivery tag.
        pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
        pn_bytes_t msgbuf = encode_message(app);
        pn_link_send(sender, msgbuf.start, msgbuf.size);
        pn_link_advance(sender);
+
+       PRINTF(", pn_delivery(sender; pn_dtag((const char *)&app->sent; sizeof(app->sent)));\n");
+       PRINTF(", pn_bytes_t msgbuf = encode_message(app);\n");
+       PRINTF(", pn_link_send(sender, msgbuf.start, msgbuf.size:%zd);\n", msgbuf.size);
+       PRINTF(", pn_link_advance(sender);\n");
+
      }
      break;
    }
