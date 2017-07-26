@@ -55,6 +55,12 @@
     fprintf(stderr, "\n");                              \
   } while(0)
 
+// This PRINTF prints something
+#define PRINTF printf
+
+// This PRINTF prints nothing
+//#define PRINTF if (0) printf
+
 #include "log_obj_namer.inc"
 
 /* Generate unique delivery tags  */
@@ -171,8 +177,6 @@ static void link_down(pn_link_t *l) {
 static inline size_t min(size_t a, size_t b) { return a < b ? a : b; }
 
 static inline size_t buffer_free(size_t size, size_t max) { return max > size ? max - size : 0; }
-
-#define PRINTF printf
 
 /* Receive data from current message if we can, if not the sender will WAKE us when we can */
 static void address_receive(address_t *a) {

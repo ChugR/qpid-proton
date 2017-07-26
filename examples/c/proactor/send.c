@@ -36,15 +36,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MESSAGE_SIZE (80 * 1024)
+
 #define fatal(...) do {                                 \
     fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);     \
     fprintf(stderr, __VA_ARGS__);                       \
     fprintf(stderr, "\n");                              \
   } while(0)
 
-#include "log_obj_namer.inc"
+// This PRINTF prints something
+//#define PRINTF printf
 
-#define PRINTF printf
+// This PRINTF prints nothing
+#define PRINTF if (0) printf
+
+#include "log_obj_namer.inc"
 
 typedef struct app_data_t {
   const char *host, *port;
@@ -79,7 +85,7 @@ static pn_bytes_t encode_message(app_data_t* app) {
   pn_data_enter(body);
 
   //pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
-  static const size_t msg_size = 4 * 1024 * 1024;
+  static const size_t msg_size = MESSAGE_SIZE;
   char * mbufptr = (char *)malloc(msg_size);
   for (size_t i=0; i<msg_size; i++)
       mbufptr[i] = '.';
@@ -91,7 +97,7 @@ static pn_bytes_t encode_message(app_data_t* app) {
   /* encode the message, expanding the encode buffer as needed */
   if (app->message_buffer.start == NULL) {
 //  static const size_t initial_size = 128;
-    static const size_t initial_size = 4 * 1024 * 1024 + 128;
+    static const size_t initial_size = MESSAGE_SIZE + 128;
     app->message_buffer = pn_rwbytes(initial_size, (char*)malloc(initial_size));
   }
   /* app->message_buffer is the total buffer space available. */

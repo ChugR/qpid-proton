@@ -17,6 +17,10 @@
  * under the License.
  */
 
+#ifndef PRINTF
+#define PRINTF printf
+#endif
+
 /* log object namer - shorter names than addresses */
 typedef struct log_obj_namer_s {
     struct log_obj_namer_s *next;
@@ -92,7 +96,7 @@ static log_obj_namers_t *log_deliveries = 0;
 
 void log_this_init(void) {
     tboot = time_now();
-    printf("Time(S), note, event, "
+    PRINTF("Time(S), note, event, "
         "xport, maxFrame, "
         "session, incoming_capacty, outgoing_window, incoming_bytes, outgoing_bytes, "
         "link, linkName, link_is_receiver, max_message_size, remote_max_message_size, current, credit, available, queued, unsettled\n");
@@ -151,7 +155,7 @@ void log_this(pn_event_t *event, const char * note) {
         unsettled          = pn_link_unsettled(link);
     }
     
-    printf("%.3f, %s, %s, "
+    PRINTF("%.3f, %s, %s, "
         "%s, %d, "
         "%s, %ld, %ld, %ld, %ld, "
         "%s, %s, %s, %lu, %lu, %s, %d, %d, %d, %d\n",
