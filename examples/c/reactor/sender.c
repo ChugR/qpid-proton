@@ -29,6 +29,7 @@
 #include "proton/connection.h"
 #include "proton/session.h"
 #include "proton/link.h"
+#include "proton/log.h"
 #include "proton/delivery.h"
 #include "proton/event.h"
 #include "proton/handlers.h"

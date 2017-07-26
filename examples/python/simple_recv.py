@@ -38,7 +38,7 @@ class Recv(MessagingHandler):
             # ignore duplicate message
             return
         if self.expected == 0 or self.received < self.expected:
-            print(event.message.body)
+            # print(event.message.body)
             self.received += 1
             if self.received == self.expected:
                 event.receiver.close()
