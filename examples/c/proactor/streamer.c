@@ -61,6 +61,8 @@
 // This PRINTF prints nothing
 //#define PRINTF if (0) printf
 
+#define STR(s) #s
+
 #include "log_obj_namer.inc"
 
 /* Generate unique delivery tags  */
@@ -210,10 +212,10 @@ static void address_receive(address_t *a) {
           pn_delivery_settle(d);
           pn_link_flow(a->receiver, 1);
 
-          PRINTF(", pn_link_advance(a->receiver);");
-          PRINTF(", pn_delivery_update(d; PN_ACCEPTED);");
-          PRINTF(", pn_delivery_settle(d);");
-          PRINTF(", pn_link_flow(a->receiver; 1);");
+          PRINTF(", pn_link_advance(a->receiver);\n");
+          PRINTF(", pn_delivery_update(d; PN_ACCEPTED);\n");
+          PRINTF(", pn_delivery_settle(d);\n");
+          PRINTF(", pn_link_flow(a->receiver; 1);\n");
 
           a->end_of_message = true;
           wake = true;

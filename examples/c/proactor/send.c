@@ -36,7 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MESSAGE_SIZE (80 * 1024)
+#define MESSAGE_SIZE (2048 * 1024)
 
 #define fatal(...) do {                                 \
     fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);     \
@@ -45,10 +45,10 @@
   } while(0)
 
 // This PRINTF prints something
-//#define PRINTF printf
+#define PRINTF printf
 
 // This PRINTF prints nothing
-#define PRINTF if (0) printf
+//#define PRINTF if (0) printf
 
 #include "log_obj_namer.inc"
 
