@@ -339,7 +339,9 @@ static void handle(streamer_t* s, pn_event_t* e) {
      pn_link_t *l = pn_event_link(e);
      address_t *a = NULL;
      if (pn_link_is_sender(l)) {
-       a = addresses_get(&s->addresses, pn_terminus_get_address(pn_link_remote_source(l)));
+       const char *source = pn_terminus_get_address(pn_link_remote_source(l));
+       a = addresses_get(&s->addresses, source);
+       pn_terminus_set_address(pn_link_source(l), source);
        if (a->sender) fatal("%s already has a sender", a->name);
        a->sender = l;
        size_t max_frame = pn_transport_get_max_frame(pn_event_transport(e));
@@ -350,7 +352,9 @@ static void handle(streamer_t* s, pn_event_t* e) {
                (unsigned long)a->session_out/1024,
                (unsigned long) (max_frame * window)/1024);
      } else {
-       a = addresses_get(&s->addresses, pn_terminus_get_address(pn_link_remote_target(l)));
+       const char* target = pn_terminus_get_address(pn_link_remote_target(l));
+       a = addresses_get(&s->addresses, target);
+       pn_terminus_set_address(pn_link_target(l), target);
        if (a->receiver) fatal("%s already has a receiver", a->name);
        a->receiver = l;
      }
