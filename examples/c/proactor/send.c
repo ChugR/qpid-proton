@@ -37,6 +37,7 @@
 #include <string.h>
 
 #define MESSAGE_SIZE (2048 * 1024)
+#define SEND_BATCH_SIZE 2
 
 #define fatal(...) do {                                 \
     fprintf(stderr, "%s:%d: ", __FILE__, __LINE__);     \
@@ -52,16 +53,23 @@
 
 #include "log_obj_namer.inc"
 
-typedef struct app_data_t {
-  const char *host, *port;
+typedef struct app_instance_s {
+  pn_link_t* link;
   const char *amqp_address;
-  const char *container_id;
+  int message_size;
   int message_count;
-
-  pn_proactor_t *proactor;
   pn_rwbytes_t message_buffer;
   int sent;
   int acknowledged;
+} app_instance_t;
+
+typedef struct app_data_t {
+  const char *host, *port;
+  const char *container_id;
+  pn_proactor_t *proactor;
+
+  app_instance_t l1;
+  app_instance_t l2;
 } app_data_t;
 
 static int exit_code = 0;
@@ -75,39 +83,44 @@ static void check_condition(pn_event_t *e, pn_condition_t *cond) {
   }
 }
 
+#define GET(flag, val) (flag ? app->l1.val : app->l2.val)
+
 /// HACK ALERT /* Create a message with a map { "sequence" : number } encode it and return the encoded buffer. */
-static pn_bytes_t encode_message(app_data_t* app) {
+static pn_bytes_t encode_message(app_data_t* app, app_instance_t* inst) {
   /* Construct a message with the map { "sequence": app.sent } */
   pn_message_t* message = pn_message();
-  pn_data_put_int(pn_message_id(message), app->sent); /* Set the message_id also */
+  pn_data_put_int(pn_message_id(message), inst->sent); /* Set the message_id also */
   pn_data_t* body = pn_message_body(message);
   pn_data_put_map(body);
   pn_data_enter(body);
 
   //pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
-  static const size_t msg_size = MESSAGE_SIZE;
+  size_t msg_size = inst->message_size;
   char * mbufptr = (char *)malloc(msg_size);
   for (size_t i=0; i<msg_size; i++)
       mbufptr[i] = '.';
   pn_data_put_string(body, pn_bytes(msg_size-1, mbufptr));
 
-  pn_data_put_int(body, app->sent); /* The sequence number */
+  pn_data_put_int(body, inst->sent); /* The sequence number */
   pn_data_exit(body);
 
+  pn_rwbytes_t mbuf;
+  int status = 0;
+  size_t initial_size;
   /* encode the message, expanding the encode buffer as needed */
-  if (app->message_buffer.start == NULL) {
-//  static const size_t initial_size = 128;
-    static const size_t initial_size = MESSAGE_SIZE + 128;
-    app->message_buffer = pn_rwbytes(initial_size, (char*)malloc(initial_size));
+  if (inst->message_buffer.start == NULL) {
+      //  static const size_t initial_size = 128;
+      initial_size = MESSAGE_SIZE + 128;
+      inst->message_buffer = pn_rwbytes(initial_size, (char*)malloc(initial_size));
   }
   /* app->message_buffer is the total buffer space available. */
   /* mbuf wil point at just the portion used by the encoded message */
-  pn_rwbytes_t mbuf = pn_rwbytes(app->message_buffer.size, app->message_buffer.start);
-  int status = 0;
+  mbuf = pn_rwbytes(inst->message_buffer.size, inst->message_buffer.start);
+  status = 0;
   while ((status = pn_message_encode(message, mbuf.start, &mbuf.size)) == PN_OVERFLOW) {
-    app->message_buffer.size *= 2;
-    app->message_buffer.start = (char*)realloc(app->message_buffer.start, app->message_buffer.size);
-    mbuf.size = app->message_buffer.size;
+      inst->message_buffer.size *= 2;
+      inst->message_buffer.start = (char*)realloc(inst->message_buffer.start, inst->message_buffer.size);
+      mbuf.size = inst->message_buffer.size;
   }
   if (status != 0) {
     fprintf(stderr, "error encoding message: %s\n", pn_error_text(pn_message_error(message)));
@@ -128,29 +141,40 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      pn_connection_open(c);
      pn_session_t* s = pn_session(pn_event_connection(event));
      pn_session_open(s);
-     pn_link_t* l = pn_sender(s, "my_sender");
-     pn_terminus_set_address(pn_link_target(l), app->amqp_address);
-     pn_link_open(l);
+     app->l1.link = pn_sender(s, "my_sender1");
+     pn_terminus_set_address(pn_link_target(app->l1.link), app->l1.amqp_address);
+     pn_link_open(app->l1.link);
+     app->l2.link = pn_sender(s, "my_sender2");
+     pn_terminus_set_address(pn_link_target(app->l2.link), app->l2.amqp_address);
+     pn_link_open(app->l2.link);
      break;
    }
 
    case PN_LINK_FLOW: {
      /* The peer has given us some credit, now we can send messages */
      pn_link_t *sender = pn_event_link(event);
-     while (pn_link_credit(sender) > 0 && app->sent < app->message_count) {
-       PRINTF(", credit:%d = pn_link_credit()\n", pn_link_credit(sender));
-       ++app->sent;
+     app_instance_t *inst;
+     bool is_l1 = sender == app->l1.link;
+     inst = is_l1 ? &app->l1 : &app->l2;
+     int sent = 0;
+     while (
+         (pn_link_credit(sender) > 0) && 
+         (inst->sent < inst->message_count) && 
+         (sent < SEND_BATCH_SIZE)) {
+       PRINTF(", link %s, credit:%d = pn_link_credit()\n", (is_l1 ? "l1" : "l2"), pn_link_credit(sender));
+       inst->sent += 1;
        // Use sent counter as unique delivery tag.
-       pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
-       pn_bytes_t msgbuf = encode_message(app);
+       pn_delivery(sender, pn_dtag((const char *)&inst->sent, sizeof(inst->sent)));
+       pn_bytes_t msgbuf = encode_message(app, inst);
        pn_link_send(sender, msgbuf.start, msgbuf.size);
        pn_link_advance(sender);
 
+       PRINTF(", L1 or L2: %s\n", (is_l1 ? "l1" : "l2"));
        PRINTF(", pn_delivery(sender; pn_dtag((const char *)&app->sent; sizeof(app->sent)));\n");
        PRINTF(", pn_bytes_t msgbuf = encode_message(app);\n");
        PRINTF(", pn_link_send(sender; msgbuf.start; msgbuf.size:%zd);\n", msgbuf.size);
        PRINTF(", pn_link_advance(sender);\n");
-
+        sent++;
      }
      break;
    }
@@ -158,9 +182,20 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    case PN_DELIVERY: {
      /* We received acknowledgedment from the peer that a message was delivered. */
      pn_delivery_t* d = pn_event_delivery(event);
+     pn_link_t *l = pn_event_link(event);
+     bool is_l1 = l == app->l1.link;
      if (pn_delivery_remote_state(d) == PN_ACCEPTED) {
-       if (++app->acknowledged == app->message_count) {
-         printf("%d messages sent and acknowledged\n", app->acknowledged);
+       if (is_l1) {
+            if (++app->l1.acknowledged == app->l1.message_count) {
+                printf("%d link1 messages sent and acknowledged\n", app->l1.acknowledged);
+            }
+        } else {
+            if (++app->l2.acknowledged == app->l2.message_count) {
+                printf("%d link2 messages sent and acknowledged\n", app->l2.acknowledged);
+            }
+        }
+        if (app->l1.acknowledged == app->l1.message_count &&
+            app->l2.acknowledged == app->l2.message_count) {
          pn_connection_close(pn_event_connection(event));
          /* Continue handling events till we receive TRANSPORT_CLOSED */
        }
@@ -221,8 +256,12 @@ int main(int argc, char **argv) {
   app.container_id = argv[i++];   /* Should be unique */
   app.host = (argc > 1) ? argv[i++] : "";
   app.port = (argc > 1) ? argv[i++] : "amqp";
-  app.amqp_address = (argc > i) ? argv[i++] : "example";
-  app.message_count = (argc > i) ? atoi(argv[i++]) : 10;
+  app.l1.amqp_address  = (argc > i) ? argv[i++] : "example";
+  app.l1.message_count = (argc > i) ? atoi(argv[i++]) : 10;
+  app.l1.message_size  = (argc > i) ? atoi(argv[i++]) : MESSAGE_SIZE;
+  app.l2.amqp_address  = (argc > i) ? argv[i++] : "example2";
+  app.l2.message_count = (argc > i) ? atoi(argv[i++]) : 10;
+  app.l2.message_size  = (argc > i) ? atoi(argv[i++]) : MESSAGE_SIZE;
 
   log_this_init();
 
@@ -232,6 +271,7 @@ int main(int argc, char **argv) {
   pn_proactor_connect(app.proactor, pn_connection(), addr);
   run(&app);
   pn_proactor_free(app.proactor);
-  free(app.message_buffer.start);
+  free(app.l1.message_buffer.start);
+  free(app.l2.message_buffer.start);
   return exit_code;
 }
