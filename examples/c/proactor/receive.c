@@ -46,6 +46,7 @@ typedef struct app_data_t {
 } app_data_t;
 
 static const int BATCH = 1000; /* Batch size for unlimited receive */
+static const int CHUNK = 4;    /* batch size for user specified receive */
 
 static int exit_code = 0;
 
@@ -95,7 +96,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      pn_terminus_set_address(pn_link_source(l), app->amqp_address);
      pn_link_open(l);
      /* cannot receive without granting credit: */
-     pn_link_flow(l, app->message_count ? app->message_count : BATCH);
+     pn_link_flow(l, app->message_count ? CHUNK : BATCH);
    } break;
 
    case PN_DELIVERY: {
@@ -124,7 +125,21 @@ static bool handle(app_data_t* app, pn_event_t* event) {
            /* Grant enough credit to bring it up to BATCH: */
            pn_link_flow(link, BATCH - pn_link_credit(link));
          }
-       } else if (++app->received >= app->message_count) {
+       } else {
+         /* receive N - see if more credit is needed */
+         if (pn_link_credit(link) < CHUNK/2) {
+           // Before granting credit, maybe sleep
+           if (app->mS_delay > 0) {
+               struct timespec sleeptime;
+               sleeptime.tv_sec = app->mS_delay / 1000;
+               sleeptime.tv_nsec = (app->mS_delay % 1000) * 1000000; 
+               nanosleep(&sleeptime, NULL);
+           }
+           /* Grant enough credit to bring it up to CHUNK: */
+           pn_link_flow(link, CHUNK - pn_link_credit(link));
+         }
+       }
+       if (++app->received >= app->message_count) {
          /* done receiving, close the endpoints */
          printf("%d messages received\n", app->received);
          pn_session_t *ssn = pn_link_session(link);

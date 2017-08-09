@@ -95,7 +95,7 @@ static pn_bytes_t encode_message(app_data_t* app, app_instance_t* inst) {
   pn_data_enter(body);
 
   //pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
-  size_t msg_size = inst->message_size;
+  static const size_t msg_size = MESSAGE_SIZE;
   char * mbufptr = (char *)malloc(msg_size);
   for (size_t i=0; i<msg_size; i++)
       mbufptr[i] = '.';
@@ -154,8 +154,11 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      /* The peer has given us some credit, now we can send messages */
      pn_link_t *sender = pn_event_link(event);
      app_instance_t *inst;
+     app_instance_t *inst2; //2
      bool is_l1 = sender == app->l1.link;
-     inst = is_l1 ? &app->l1 : &app->l2;
+     inst  = is_l1 ? &app->l1 : &app->l2;
+     inst2 = is_l1 ? &app->l2 : &app->l1; //2
+     pn_link_t *sender2 = is_l1 ? app->l2.link : app->l1.link; //2
      int sent = 0;
      while (
          (pn_link_credit(sender) > 0) && 
@@ -163,13 +166,26 @@ static bool handle(app_data_t* app, pn_event_t* event) {
          (sent < SEND_BATCH_SIZE)) {
        PRINTF(", link %s, credit:%d = pn_link_credit()\n", (is_l1 ? "l1" : "l2"), pn_link_credit(sender));
        inst->sent += 1;
+       inst2->sent += 1; //2
        // Use sent counter as unique delivery tag.
        pn_delivery(sender, pn_dtag((const char *)&inst->sent, sizeof(inst->sent)));
+       pn_delivery(sender2, pn_dtag((const char *)&inst2->sent, sizeof(inst2->sent))); //2
        pn_bytes_t msgbuf = encode_message(app, inst);
-       pn_link_send(sender, msgbuf.start, msgbuf.size);
+       {
+         size_t bytessent = 0;
+         static const size_t linksend_size = 100;
+         while (bytessent < msgbuf.size) {
+             size_t bytesremaining = msgbuf.size - bytessent;
+             size_t bytes2send = linksend_size < bytesremaining ? linksend_size : bytesremaining;
+             pn_link_send(sender,  msgbuf.start + bytessent, bytes2send);
+             pn_link_send(sender2, msgbuf.start + bytessent, bytes2send);
+             bytessent += bytes2send;
+             PRINTF(", BOTH LINKS: bucked %zu bytes, total sent: %zu\n", bytes2send, bytessent);
+         }
+       }
        pn_link_advance(sender);
+       pn_link_advance(sender2);
 
-       PRINTF(", L1 or L2: %s\n", (is_l1 ? "l1" : "l2"));
        PRINTF(", pn_delivery(sender; pn_dtag((const char *)&app->sent; sizeof(app->sent)));\n");
        PRINTF(", pn_bytes_t msgbuf = encode_message(app);\n");
        PRINTF(", pn_link_send(sender; msgbuf.start; msgbuf.size:%zd);\n", msgbuf.size);
