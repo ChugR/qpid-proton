@@ -18,6 +18,7 @@
  * under the License.
  *
  */
+#define _POSIX_C_SOURCE 199309L
 
 #include <proton/connection.h>
 #include <proton/condition.h>
@@ -30,12 +31,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct app_data_t {
   const char *host, *port;
   const char *amqp_address;
   const char *container_id;
   int message_count;
+  int mS_delay;
 
   pn_proactor_t *proactor;
   int received;
@@ -111,6 +114,13 @@ static bool handle(app_data_t* app, pn_event_t* event) {
        if (app->message_count == 0) {
          /* receive forever - see if more credit is needed */
          if (pn_link_credit(link) < BATCH/2) {
+           // Before granting credit, maybe sleep
+           if (app->mS_delay > 0) {
+               struct timespec sleeptime;
+               sleeptime.tv_sec = app->mS_delay / 1000;
+               sleeptime.tv_nsec = (app->mS_delay % 1000) * 1000000; 
+               nanosleep(&sleeptime, NULL);
+           }
            /* Grant enough credit to bring it up to BATCH: */
            pn_link_flow(link, BATCH - pn_link_credit(link));
          }
@@ -176,6 +186,7 @@ int main(int argc, char **argv) {
   app.port = (argc > 1) ? argv[i++] : "amqp";
   app.amqp_address = (argc > i) ? argv[i++] : "example";
   app.message_count = (argc > i) ? atoi(argv[i++]) : 10;
+  app.mS_delay      = (argc > i) ? atoi(argv[i++]) : 0;
 
   /* Create the proactor and connect */
   app.proactor = pn_proactor();
