@@ -61,6 +61,11 @@ typedef struct app_instance_s {
   pn_rwbytes_t message_buffer;
   int sent;
   int acknowledged;
+
+  bool       message_in_progress;
+  size_t     bytes_sent;
+  pn_bytes_t msgbuf;
+
 } app_instance_t;
 
 typedef struct app_data_t {
@@ -69,12 +74,7 @@ typedef struct app_data_t {
   pn_proactor_t *proactor;
 
   app_instance_t l1;
-  app_instance_t l2;
-
-  bool       message_in_progress;
-  size_t     bytes_sent;
-  pn_bytes_t msgbuf;
-  
+  app_instance_t l2;  
 } app_data_t;
 
 static int exit_code = 0;
@@ -88,8 +88,6 @@ static void check_condition(pn_event_t *e, pn_condition_t *cond) {
   }
 }
 
-#define GET(flag, val) (flag ? app->l1.val : app->l2.val)
-
 /// HACK ALERT /* Create a message with a map { "sequence" : number } encode it and return the encoded buffer. */
 static pn_bytes_t encode_message(app_data_t* app, app_instance_t* inst) {
   /* Construct a message with the map { "sequence": app.sent } */
@@ -100,7 +98,7 @@ static pn_bytes_t encode_message(app_data_t* app, app_instance_t* inst) {
   pn_data_enter(body);
 
   //pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
-  size_t msg_size = app->l1.message_size;
+  size_t msg_size = inst->message_size;
   char * mbufptr = (char *)malloc(msg_size);
   for (size_t i=0; i<msg_size; i++)
       mbufptr[i] = '.';
@@ -136,25 +134,23 @@ static pn_bytes_t encode_message(app_data_t* app, app_instance_t* inst) {
 }
 
 
-/* Sends a chunk of data to each link */
+/* Sends a chunk of data to one link */
 static void send_chunk(app_data_t* app,
                        pn_link_t *sender,
-                       pn_link_t *sender2,
-                       app_instance_t *inst,
-                       app_instance_t *inst2) {
-    size_t bytesremaining = app->msgbuf.size - app->bytes_sent;
+                       app_instance_t *inst) {
+    size_t bytesremaining = inst->msgbuf.size - inst->bytes_sent;
     size_t bytes2send = LINK_CHUNK_SIZE < bytesremaining ? LINK_CHUNK_SIZE : bytesremaining;
-    pn_link_send(sender,  app->msgbuf.start + app->bytes_sent, bytes2send);
-    pn_link_send(sender2, app->msgbuf.start + app->bytes_sent, bytes2send);
-    app->bytes_sent += bytes2send;
-    PRINTF(", BOTH LINKS: sent block of %zu bytes, total sent: %zu\n", bytes2send, app->bytes_sent);
-    bytesremaining = app->msgbuf.size - app->bytes_sent;
+    pn_link_send(sender,  inst->msgbuf.start + inst->bytes_sent, bytes2send);
+    inst->bytes_sent += bytes2send;
+    bytesremaining = inst->msgbuf.size - inst->bytes_sent;
+    PRINTF(", link %s: sent block of %zu bytes, total sent: %zu, remaining: %zu\n", inst->amqp_address, bytes2send, inst->bytes_sent, bytesremaining);
+    if (bytesremaining < 10000) 
+        PRINTF(", break\n");
     if (bytesremaining == 0) {
         pn_link_advance(sender);
-        pn_link_advance(sender2);
         inst->sent += 1;
-        inst2->sent += 1; //2
-        app->message_in_progress = false;
+        inst->bytes_sent = 0;
+        inst->message_in_progress = false;
     }
 }
 
@@ -182,26 +178,23 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      /* The peer has given us some credit, now we can send messages */
      pn_link_t      *sender = pn_event_link(event);
      bool is_l1             = sender == app->l1.link;
-
-     pn_link_t      *sender2 = is_l1 ? app->l2.link : app->l1.link; //2
      app_instance_t *inst    = is_l1 ? &app->l1 : &app->l2;
-     app_instance_t *inst2   = is_l1 ? &app->l2 : &app->l1; //2
 
      // deal with message in progress
-     if (app->message_in_progress) {
-        send_chunk(app, sender, sender2, inst, inst2);
+     if (inst->message_in_progress) {
+        send_chunk(app, sender, inst);
         break;
      }
 
      // start new message, maybe
      if  (pn_link_credit(sender) > 0 && 
          (inst->sent < inst->message_count)) {
-       PRINTF(", Start message on links.  %s, credit:%d = pn_link_credit()\n", (is_l1 ? "l1" : "l2"), pn_link_credit(sender));
+       PRINTF(", Start message on link %s.  credit:%d = pn_link_credit()\n", inst->amqp_address, pn_link_credit(sender));
        // Use sent counter as unique delivery tag.
        pn_delivery(sender, pn_dtag((const char *)&inst->sent, sizeof(inst->sent)));
-       pn_delivery(sender2, pn_dtag((const char *)&inst2->sent, sizeof(inst2->sent))); //2
-       app->msgbuf = encode_message(app, inst);
-       send_chunk(app, sender, sender2, inst, inst2);
+       inst->msgbuf = encode_message(app, inst);
+       send_chunk(app, sender, inst);
+       inst->message_in_progress = true;
      }
      break;
    }
@@ -292,6 +285,8 @@ int main(int argc, char **argv) {
 
   log_this_init();
 
+  PRINTF(", l1 address: %s, count: %d, size:%d\n", app.l1.amqp_address, app.l1.message_count, app.l1.message_size);
+  PRINTF(", l2 address: %s, count: %d, size:%d\n", app.l2.amqp_address, app.l2.message_count, app.l2.message_size);
   app.proactor = pn_proactor();
   char addr[PN_MAX_ADDR];
   pn_proactor_addr(addr, sizeof(addr), app.host, app.port);
