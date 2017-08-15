@@ -144,8 +144,6 @@ static void send_chunk(app_data_t* app,
     inst->bytes_sent += bytes2send;
     bytesremaining = inst->msgbuf.size - inst->bytes_sent;
     PRINTF(", link %s: sent block of %zu bytes, total sent: %zu, remaining: %zu\n", inst->amqp_address, bytes2send, inst->bytes_sent, bytesremaining);
-    if (bytesremaining < 10000) 
-        PRINTF(", break\n");
     if (bytesremaining == 0) {
         pn_link_advance(sender);
         inst->sent += 1;
@@ -175,26 +173,26 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    }
 
    case PN_LINK_FLOW: {
-     /* The peer has given us some credit, now we can send messages */
+     /* The peer has given us a link flow
+      * If the flow has some credit, now we are allowed to send messages */
      pn_link_t      *sender = pn_event_link(event);
      bool is_l1             = sender == app->l1.link;
      app_instance_t *inst    = is_l1 ? &app->l1 : &app->l2;
 
-     // deal with message in progress
      if (inst->message_in_progress) {
         send_chunk(app, sender, inst);
-        break;
-     }
-
-     // start new message, maybe
-     if  (pn_link_credit(sender) > 0 && 
-         (inst->sent < inst->message_count)) {
-       PRINTF(", Start message on link %s.  credit:%d = pn_link_credit()\n", inst->amqp_address, pn_link_credit(sender));
-       // Use sent counter as unique delivery tag.
-       pn_delivery(sender, pn_dtag((const char *)&inst->sent, sizeof(inst->sent)));
-       inst->msgbuf = encode_message(app, inst);
-       send_chunk(app, sender, inst);
-       inst->message_in_progress = true;
+     } else {
+        // start new message, maybe
+        if  (pn_link_credit(sender) > 0 && inst->sent < inst->message_count) {
+            PRINTF(", Start message on link %s.  credit:%d = pn_link_credit()\n", inst->amqp_address, pn_link_credit(sender));
+            // Use sent counter as unique delivery tag.
+            pn_delivery(sender, pn_dtag((const char *)&inst->sent, sizeof(inst->sent)));
+            inst->msgbuf = encode_message(app, inst);
+            inst->message_in_progress = true;
+            send_chunk(app, sender, inst);
+        } else {
+            // Can't send right now
+        }
      }
      break;
    }
@@ -274,12 +272,12 @@ int main(int argc, char **argv) {
   struct app_data_t app = {0};
   int i = 0;
   app.container_id = argv[i++];   /* Should be unique */
-  app.host = (argc > 1) ? argv[i++] : "";
-  app.port = (argc > 1) ? argv[i++] : "amqp";
-  app.l1.amqp_address  = (argc > i) ? argv[i++] : "example";
+  app.host = (argc > 1) ? argv[i++]                   : "";
+  app.port = (argc > 1) ? argv[i++]                   : "amqp";
+  app.l1.amqp_address  = (argc > i) ? argv[i++]       : "example";
   app.l1.message_count = (argc > i) ? atoi(argv[i++]) : 10;
   app.l1.message_size  = (argc > i) ? atoi(argv[i++]) : MESSAGE_SIZE;
-  app.l2.amqp_address  = (argc > i) ? argv[i++] : "example2";
+  app.l2.amqp_address  = (argc > i) ? argv[i++]       : "example2";
   app.l2.message_count = (argc > i) ? atoi(argv[i++]) : 10;
   app.l2.message_size  = (argc > i) ? atoi(argv[i++]) : MESSAGE_SIZE;
 
