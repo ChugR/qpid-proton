@@ -60,7 +60,6 @@ typedef struct app_data_t {
   int sent;
   int aborted;
   bool in_progress;
-  pn_bytes_t msgbuf;
 } app_data_t;
 
 static int exit_code = 0;
@@ -128,28 +127,28 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    case PN_LINK_FLOW: {
      /* The peer has given us some credit, now we can send messages */
      pn_link_t *sender = pn_event_link(event);
-    while (app->in_progress || (pn_link_credit(sender) > 0 && app->sent < app->message_count)) {
+     while (app->in_progress || (pn_link_credit(sender) > 0 && app->sent < app->message_count)) {
         if (!app->in_progress) {
-            // Use sent counter as unique delivery tag.
-            pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
-            app->msgbuf = encode_message(app);
-            pn_link_send(sender, app->msgbuf.start, app->msgbuf.size - HOLDBACK); // Send some part of message
-            app->in_progress = true;
-            // Return from this link flow event and abort the message on next,
-            break;
+          // Use sent counter as unique delivery tag.
+          pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
+          pn_bytes_t msgbuf = encode_message(app);
+          pn_link_send(sender, msgbuf.start, msgbuf.size - HOLDBACK); // Send some part of message
+          app->in_progress = true;
+          // Return from this link flow event and abort the message on next,
+          break;
         } else {
-            pn_delivery_t * pnd = pn_link_current(sender);
-            pn_delivery_abort(pnd);
-            // aborted delivery is presettled and never ack'd.
-            if (++app->aborted == app->message_count) {
-                printf("%d messages started and aborted\n", app->aborted);
-                pn_connection_close(pn_event_connection(event));
-                /* Continue handling events till we receive TRANSPORT_CLOSED */
-            }
-            ++app->sent;
-            app->in_progress = false;
+          pn_delivery_t * pnd = pn_link_current(sender);
+          pn_delivery_abort(pnd);
+          // aborted delivery is presettled and never ack'd.
+          if (++app->aborted == app->message_count) {
+            printf("%d messages started and aborted\n", app->aborted);
+            pn_connection_close(pn_event_connection(event));
+            /* Continue handling events till we receive TRANSPORT_CLOSED */
+          }
+          ++app->sent;
+          app->in_progress = false;
         }
-    }
+     }
      break;
    }
 
