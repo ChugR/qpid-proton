@@ -45,6 +45,10 @@
 #define MSG_SIZE 80000
 #define HOLDBACK  1000
 
+#if MSG_SIZE <= HOLDBACK
+#error "MSG_SIZE must be greater than HOLDBACK"
+#endif
+
 typedef struct app_data_t {
   const char *host, *port;
   const char *amqp_address;
@@ -129,15 +133,16 @@ static bool handle(app_data_t* app, pn_event_t* event) {
             // Use sent counter as unique delivery tag.
             pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
             app->msgbuf = encode_message(app);
-            pn_link_send(sender, app->msgbuf.start, app->msgbuf.size - HOLDBACK); // Don't send it all
+            pn_link_send(sender, app->msgbuf.start, app->msgbuf.size - HOLDBACK); // Send some part of message
             app->in_progress = true;
+            // Return from this link flow event and abort the message on next,
             break;
         } else {
             pn_delivery_t * pnd = pn_link_current(sender);
             pn_delivery_abort(pnd);
             // aborted delivery is presettled and never ack'd.
             if (++app->aborted == app->message_count) {
-                printf("%d messages sent and aborted\n", app->aborted);
+                printf("%d messages started and aborted\n", app->aborted);
                 pn_connection_close(pn_event_connection(event));
                 /* Continue handling events till we receive TRANSPORT_CLOSED */
             }
