@@ -1,0 +1,23 @@
+This log group shows two tests
+
+sender
+  * send-abort 1
+  * send-abort 10
+
+broker
+  * broker
+
+receiver
+  * receive 1
+  * receive 10
+
+In the 10 case:
+  * send-abort pumps out batches of 79K bytes
+  * receive receives nothing
+  * broker receives one aborted message
+    and then ignores a whole batch of pn_delivery
+    events while incoming bytes builds up
+
+The 1 case does the same thing but it is hard to tell.
+
+

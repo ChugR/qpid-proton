@@ -18,6 +18,7 @@
  * under the License.
  *
  */
+#include "thread.h"
 
 #include <proton/connection.h>
 #include <proton/condition.h>
@@ -30,6 +31,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#define MUTEX_PTHREAD
+#include "log_obj_namer.inc"
 
 typedef struct app_data_t {
   const char *host, *port;
@@ -63,7 +67,7 @@ static void decode_message(pn_rwbytes_t data) {
     /* Print the decoded message */
     pn_string_t *s = pn_string(NULL);
     pn_inspect(pn_message_body(m), s);
-    printf("%s\n", pn_string_get(s));
+    printf(", , Received string of length %zu\n", strlen(pn_string_get(s)));
     pn_free(s);
     pn_message_free(m);
     free(data.start);
@@ -75,6 +79,7 @@ static void decode_message(pn_rwbytes_t data) {
 
 /* Return true to continue, false to exit */
 static bool handle(app_data_t* app, pn_event_t* event) {
+  log_event(event, "ENTER");
   switch (pn_event_type(event)) {
 
    case PN_CONNECTION_INIT: {
@@ -94,13 +99,20 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      /* A message has been received */
      pn_delivery_t *d = pn_event_delivery(event);
      pn_link_t *r = pn_delivery_link(d);
-     if (!pn_delivery_readable(d)) break;
+     if (!pn_delivery_readable(d)) {
+        log_text("LOG pn_delivery_readable(d) is false");
+        break;
+     }
      for (size_t p = pn_delivery_pending(d); p > 0; p = pn_delivery_pending(d)) {
        /* Append data to the receving buffer */
        app->receiving.size += p;
        app->receiving.start = (char*)realloc(app->receiving.start, app->receiving.size);
+       log_text("LOG pn_link_recv()");
        int recv = pn_link_recv(r, app->receiving.start + app->receiving.size - p, p);
-       if (recv == PN_ABORTED) break;
+       if (recv == PN_ABORTED) {
+           log_text("LOG pn_link_recv = PN_ABORTED. exit the delivery pending receive loop");
+           break;
+       }
        if (recv < 0 && recv != PN_EOS) {
          fprintf(stderr, "PN_DELIVERY: pn_link_recv error %s\n", pn_code(recv));
          exit_code = 1;
@@ -109,20 +121,24 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      }
      if (!pn_delivery_partial(d)) {
        if (pn_delivery_aborted(d)) {
-         printf("message %d was aborted\n", app->received+1);
+         printf(",,message %d was aborted\n", app->received+1);
        } else {
          decode_message(app->receiving);
          app->receiving = pn_rwbytes_null;
          /* Accept the delivery */
+         log_text("pn_delivery_update(d, PN_ACCEPTED)");
          pn_delivery_update(d, PN_ACCEPTED);
          /* done with the delivery, move to the next and free it */
+         log_text("pn_link_advance()");
          pn_link_advance(r);
+         log_text("pn_delivery_settle(d)");
          pn_delivery_settle(d);  /* d is now freed */
        }
        if (app->message_count == 0) {
          /* receive forever - see if more credit is needed */
          if (pn_link_credit(r) < BATCH/2) {
            /* Grant enough credit to bring it up to BATCH: */
+           log_text("pn_link_flow()");
            pn_link_flow(r, BATCH - pn_link_credit(r));
          }
        } else if (++app->received >= app->message_count) {
@@ -158,12 +174,14 @@ static bool handle(app_data_t* app, pn_event_t* event) {
 
    case PN_PROACTOR_INACTIVE:
     return false;
+    log_event(event, "EXIT ");
     break;
 
    default:
     break;
   }
-    return true;
+  log_event(event, "EXIT ");
+  return true;
 }
 
 void run(app_data_t *app) {
@@ -180,6 +198,9 @@ void run(app_data_t *app) {
 }
 
 int main(int argc, char **argv) {
+  log_this_init();
+  printf("0.000, examples/c/receive\n");
+
   struct app_data_t app = {0};
   app.container_id = argv[0];   /* Should be unique */
   app.host = (argc > 1) ? argv[1] : "";

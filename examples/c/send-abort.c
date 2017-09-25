@@ -18,6 +18,7 @@
  * under the License.
  *
  */
+#include "thread.h"
 
 #include <proton/connection.h>
 #include <proton/condition.h>
@@ -30,6 +31,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#define MUTEX_PTHREAD
+#include "log_obj_namer.inc"
 
 /*
  * Send aborted messages.
@@ -110,6 +114,7 @@ static pn_bytes_t encode_message(app_data_t* app) {
 
 /* Returns true to continue, false if finished */
 static bool handle(app_data_t* app, pn_event_t* event) {
+  log_event(event, "ENTER");
   switch (pn_event_type(event)) {
 
    case PN_CONNECTION_INIT: {
@@ -130,18 +135,22 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      while (app->in_progress || (pn_link_credit(sender) > 0 && app->sent < app->message_count)) {
         if (!app->in_progress) {
           // Use sent counter as unique delivery tag.
+          log_text("LOG pn_link_delivery()");
           pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
           pn_bytes_t msgbuf = encode_message(app);
+          log_text("LOG pn_link_send()");
           pn_link_send(sender, msgbuf.start, msgbuf.size - HOLDBACK); // Send some part of message
           app->in_progress = true;
           // Return from this link flow event and abort the message on next,
           break;
         } else {
           pn_delivery_t * pnd = pn_link_current(sender);
+          log_text("LOG pn_delivery_abort()");
           pn_delivery_abort(pnd);
           // aborted delivery is presettled and never ack'd.
           if (++app->aborted == app->message_count) {
             printf("%d messages started and aborted\n", app->aborted);
+            log_text("LOG pn_connection_close()");
             pn_connection_close(pn_event_connection(event));
             /* Continue handling events till we receive TRANSPORT_CLOSED */
           }
@@ -182,10 +191,12 @@ static bool handle(app_data_t* app, pn_event_t* event) {
     break;
 
    case PN_PROACTOR_INACTIVE:
+    log_event(event, "EXIT ");
     return false;
 
    default: break;
   }
+  log_event(event, "EXIT ");
   return true;
 }
 
@@ -203,6 +214,9 @@ void run(app_data_t *app) {
 }
 
 int main(int argc, char **argv) {
+  log_this_init();
+  printf("0.000, examples/c/send-abort\n");
+
   struct app_data_t app = {0};
   app.container_id = argv[0];   /* Should be unique */
   app.host = (argc > 1) ? argv[1] : "";

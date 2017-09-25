@@ -18,6 +18,7 @@
  * under the License.
  *
  */
+#include "thread.h"
 
 #include <proton/connection.h>
 #include <proton/condition.h>
@@ -30,6 +31,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#define MUTEX_PTHREAD
+#include "log_obj_namer.inc"
 
 typedef struct app_data_t {
   const char *host, *port;
@@ -90,6 +94,7 @@ static pn_bytes_t encode_message(app_data_t* app) {
 
 /* Returns true to continue, false if finished */
 static bool handle(app_data_t* app, pn_event_t* event) {
+  log_event(event, "ENTER");
   switch (pn_event_type(event)) {
 
    case PN_CONNECTION_INIT: {
@@ -110,9 +115,12 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      while (pn_link_credit(sender) > 0 && app->sent < app->message_count) {
        ++app->sent;
        // Use sent counter as unique delivery tag.
+       log_text("LOG pn_delivery()");
        pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
        pn_bytes_t msgbuf = encode_message(app);
+       log_text("LOG pn_link_send()");
        pn_link_send(sender, msgbuf.start, msgbuf.size);
+       log_text("LOG pn_link_advance()");
        pn_link_advance(sender);
      }
      break;
@@ -124,6 +132,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      if (pn_delivery_remote_state(d) == PN_ACCEPTED) {
        if (++app->acknowledged == app->message_count) {
          printf("%d messages sent and acknowledged\n", app->acknowledged);
+         log_text("LOG pn_connection_close()");
          pn_connection_close(pn_event_connection(event));
          /* Continue handling events till we receive TRANSPORT_CLOSED */
        }
@@ -156,10 +165,12 @@ static bool handle(app_data_t* app, pn_event_t* event) {
     break;
 
    case PN_PROACTOR_INACTIVE:
+    log_event(event, "EXIT ");
     return false;
 
    default: break;
   }
+  log_event(event, "EXIT ");
   return true;
 }
 
@@ -177,6 +188,9 @@ void run(app_data_t *app) {
 }
 
 int main(int argc, char **argv) {
+  log_this_init();
+  printf("0.000, examples/c/send\n");
+
   struct app_data_t app = {0};
   app.container_id = argv[0];   /* Should be unique */
   app.host = (argc > 1) ? argv[1] : "";

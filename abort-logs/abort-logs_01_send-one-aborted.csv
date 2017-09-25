@@ -1,0 +1,1467 @@
+Time(S), note, event, xport, maxFrame, session, incoming_capacty, outgoing_window, incoming_bytes, outgoing_bytes, link, linkName, link_is_receiver, max_message_size, remote_max_message_size, current, credit, available, queued, unsettled
+0.000, 2017-07-31 - streamer example STREAMER log. Sender sends one 2Mb message
+0.000, Streamer-to-sender uses 16K max frame
+0.000, Streamer chunks incoming data into a 250Kb buffer and stops issuing flows to sender when buffer is full.
+0.000, Streamer sends 250Kb to receiver and then sends flow to sender.
+0.000, Until sender gets flow it has no session window to send to streamer and holds data in sender buffers
+
+0.001, ENTER, PN_LISTENER_OPEN, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+listening
+0.001, EXIT , PN_LISTENER_OPEN, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_LISTENER_ACCEPT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_LISTENER_ACCEPT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_CONNECTION_INIT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_CONNECTION_INIT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_CONNECTION_BOUND, xport-1, 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_CONNECTION_BOUND, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_CONNECTION_REMOTE_OPEN, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_CONNECTION_REMOTE_OPEN, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_SESSION_INIT, xport-1, 16384, sessn-1, 1048576, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_SESSION_INIT, xport-1, 16384, sessn-1, 1048576, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_SESSION_REMOTE_OPEN, xport-1, 16384, sessn-1, 1048576, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_SESSION_REMOTE_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_LINK_INIT, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_LINK_INIT, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_LINK_REMOTE_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_LINK_REMOTE_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_CONNECTION_LOCAL_OPEN, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_CONNECTION_LOCAL_OPEN, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_SESSION_LOCAL_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_SESSION_LOCAL_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_LINK_LOCAL_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_LINK_LOCAL_OPEN, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 0, 0, 0, 0
+4.644, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+4.644, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_LISTENER_ACCEPT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_LISTENER_ACCEPT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_CONNECTION_INIT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_CONNECTION_INIT, , 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_CONNECTION_BOUND, xport-2, 0, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_CONNECTION_BOUND, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_CONNECTION_REMOTE_OPEN, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_CONNECTION_REMOTE_OPEN, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_SESSION_INIT, xport-2, 16384, sessn-2, 1048576, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_SESSION_INIT, xport-2, 16384, sessn-2, 1048576, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_SESSION_REMOTE_OPEN, xport-2, 16384, sessn-2, 1048576, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_SESSION_REMOTE_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_LINK_INIT, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+7.281, EXIT , PN_LINK_INIT, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+7.281, ENTER, PN_LINK_REMOTE_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+outgoing session limit for q1-multicast: 256K (requested 34359738352K)
+7.281, EXIT , PN_LINK_REMOTE_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+7.281, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+, address_send: entry
+, address_send: sender blocked
+7.281, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+7.281, ENTER, PN_CONNECTION_LOCAL_OPEN, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_CONNECTION_LOCAL_OPEN, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_SESSION_LOCAL_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_SESSION_LOCAL_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_LINK_LOCAL_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+7.281, EXIT , PN_LINK_LOCAL_OPEN, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 1, 0, 0, 0
+7.281, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.281, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, address_receive: started: pn_link_flow(FLOW_WINDOW=100)
+7.282, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.282, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.282, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_send: create delivery pn_delivery()
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.298, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+7.298, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.298, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=32696
+, address_send: pending:0 = pn_session_outgoing_bytes()
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_send: sent:32696 = pn_link_send(size=32696)
+, address_send: a->size reduced to: 0
+7.298, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 32696, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+7.298, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.298, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.298, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.298, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.298, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:65248 = pn_delivery_pending()
+, address_receive: recv:65248 = pn_link_recv(size:65248)
+, 0 = pn_delivery_pending()
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:288 = pn_link_recv(size:288)
+, address_receive: receiver blocked
+7.298, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16060, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16060, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32408, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32408, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48756, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48756, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65104, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65104, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.298, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81452, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.298, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81452, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.299, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.299, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.299, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:81452 = pn_delivery_pending()
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.299, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.299, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.299, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:15916 = pn_delivery_pending()
+7.299, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:15916 = pn_link_recv(size:15916)
+, 0 = pn_delivery_pending()
+7.299, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=15916
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:15916 = pn_link_send(size=15916)
+, address_send: a->size reduced to: 0
+7.299, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 15916, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.299, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.299, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.299, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.358, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.358, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.358, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.358, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.358, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.358, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.358, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:97944 = pn_delivery_pending()
+7.358, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.358, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.358, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.359, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.359, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.359, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:32408 = pn_delivery_pending()
+7.359, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.359, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:32408 = pn_link_recv(size:32408)
+, 0 = pn_delivery_pending()
+7.359, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.359, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=32408
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:32408 = pn_link_send(size=32408)
+, address_send: a->size reduced to: 0
+7.359, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 32408, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.359, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.359, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.359, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.359, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.406, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+7.406, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.406, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.406, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.406, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.406, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.406, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:81596 = pn_delivery_pending()
+7.406, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.406, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.406, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.407, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.407, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.407, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+7.407, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.407, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:16060 = pn_delivery_pending()
+, address_receive: recv:16060 = pn_link_recv(size:16060)
+, 0 = pn_delivery_pending()
+7.407, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.407, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=16060
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16060 = pn_link_send(size=16060)
+, address_send: a->size reduced to: 0
+7.407, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 16060, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.407, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.407, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.407, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.407, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.450, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.450, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.450, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.450, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.450, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.450, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.450, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:97944 = pn_delivery_pending()
+7.450, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.450, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.450, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.450, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.450, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.450, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+7.450, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.451, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:32408 = pn_delivery_pending()
+, address_receive: recv:32408 = pn_link_recv(size:32408)
+, 0 = pn_delivery_pending()
+7.451, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.451, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=32408
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:32408 = pn_link_send(size=32408)
+, address_send: a->size reduced to: 0
+7.451, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 32408, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.451, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.451, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.451, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.451, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.495, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.495, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.495, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.495, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.495, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:81596 = pn_delivery_pending()
+7.495, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.495, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.495, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.495, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+7.495, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:16060 = pn_delivery_pending()
+, address_receive: recv:16060 = pn_link_recv(size:16060)
+, 0 = pn_delivery_pending()
+7.495, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=16060
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16060 = pn_link_send(size=16060)
+, address_send: a->size reduced to: 0
+7.495, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 16060, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.495, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.495, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.496, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.496, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.536, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.536, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.536, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.536, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.536, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:97944 = pn_delivery_pending()
+7.536, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.536, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.536, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.536, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:32408 = pn_delivery_pending()
+, address_receive: recv:32408 = pn_link_recv(size:32408)
+, 0 = pn_delivery_pending()
+7.536, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.536, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.537, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=32408
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:32408 = pn_link_send(size=32408)
+, address_send: a->size reduced to: 0
+7.537, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 32408, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.537, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.537, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.537, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.537, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.583, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.583, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.583, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.583, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.583, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.583, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.583, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:81596 = pn_delivery_pending()
+7.583, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.583, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.583, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.584, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.584, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.584, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:16060 = pn_delivery_pending()
+7.584, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:16060 = pn_link_recv(size:16060)
+, 0 = pn_delivery_pending()
+7.584, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.584, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.584, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=16060
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16060 = pn_link_send(size=16060)
+, address_send: a->size reduced to: 0
+7.584, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 16060, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.584, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.584, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.584, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.584, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.624, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.624, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.624, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.624, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.624, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.624, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.624, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:97944 = pn_delivery_pending()
+7.624, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.624, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.624, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.625, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.625, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.625, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+7.625, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.625, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:32408 = pn_delivery_pending()
+, address_receive: recv:32408 = pn_link_recv(size:32408)
+, 0 = pn_delivery_pending()
+7.625, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.625, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=32408
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:32408 = pn_link_send(size=32408)
+, address_send: a->size reduced to: 0
+7.625, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 32408, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.625, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.625, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.625, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.625, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.667, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.667, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.667, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.667, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.667, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.668, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.668, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.668, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+7.668, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.668, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:81596 = pn_delivery_pending()
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.668, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.668, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.668, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.668, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:16060 = pn_delivery_pending()
+7.668, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.668, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:16060 = pn_link_recv(size:16060)
+, 0 = pn_delivery_pending()
+7.668, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.668, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=16060
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16060 = pn_link_send(size=16060)
+, address_send: a->size reduced to: 0
+7.668, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 16060, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.668, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.668, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.668, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.668, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.707, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.707, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.707, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.707, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.707, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.707, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.707, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.707, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.708, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 97944, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.708, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.708, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.708, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:97944 = pn_delivery_pending()
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.708, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.708, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.708, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+7.708, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:32408 = pn_delivery_pending()
+, address_receive: recv:32408 = pn_link_recv(size:32408)
+, 0 = pn_delivery_pending()
+7.708, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=32408
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:32408 = pn_link_send(size=32408)
+, address_send: a->size reduced to: 0
+7.708, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 32408, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.708, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.708, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.708, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.751, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.751, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.751, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 48900, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 65248, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.751, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 81596, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.751, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.751, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.751, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.751, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:81596 = pn_delivery_pending()
+7.751, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: recv:65536 = pn_link_recv(size:65536)
+, address_receive: receiver blocked
+7.751, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.752, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.752, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.752, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.752, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.752, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:16060 = pn_delivery_pending()
+, address_receive: recv:16060 = pn_link_recv(size:16060)
+, 0 = pn_delivery_pending()
+7.752, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.752, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=16060
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16060 = pn_link_send(size=16060)
+, address_send: a->size reduced to: 0
+7.752, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 16060, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.752, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.752, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.752, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: sender blocked
+7.752, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.790, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+, address_receive: unblock sender; pn_connection_wake()
+7.790, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.790, ENTER, PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: something to send. size=16348
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:16348 = pn_link_send(size=16348)
+, address_send: a->size reduced to: 0
+7.790, EXIT , PN_CONNECTION_WAKE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.790, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+7.790, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.790, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.790, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.790, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.790, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.791, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.791, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.791, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:16348 = pn_link_recv(size:16348)
+, 0 = pn_delivery_pending()
+7.791, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.791, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16348, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, pending:16348 = pn_delivery_pending()
+, address_receive: recv:144 = pn_link_recv(size:144)
+, address_receive: receiver blocked
+7.791, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 16204, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.791, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.791, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 32552, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.791, ENTER, PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 37240, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+, address_receive: entry
+, address_receive: receiver blocked
+7.791, EXIT , PN_DELIVERY, xport-1, 16384, sessn-1, 262144, 2147483647, 37240, 0, link-1, my_sender, recvr, 0, 0, dlvry-1, 100, 0, 1, 1
+7.791, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=65536
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:65536 = pn_link_send(size=65536)
+, address_send: a->size reduced to: 0
+, address_send: unblock receiver: pn_connection_wake()
+7.791, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 65536, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+7.791, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+, address_receive: entry
+, pending:37240 = pn_delivery_pending()
+, address_receive: recv:37240 = pn_link_recv(size:37240)
+, 0 = pn_delivery_pending()
+, false = pn_delivery_partial()
+, pn_link_advance(a->receiver);
+, pn_delivery_update(d; PN_ACCEPTED);
+, pn_delivery_settle(d);
+, pn_link_flow(a->receiver; 1);
+, address_receive: end of message = true; wake = true
+7.791, EXIT , PN_CONNECTION_WAKE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_CONNECTION_REMOTE_CLOSE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_CONNECTION_REMOTE_CLOSE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT_TAIL_CLOSED, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT_TAIL_CLOSED, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_CONNECTION_LOCAL_CLOSE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_CONNECTION_LOCAL_CLOSE, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT_HEAD_CLOSED, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT_HEAD_CLOSED, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT_CLOSED, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT_CLOSED, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_LINK_LOCAL_CLOSE, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 100, 0, 0, 0
+7.791, EXIT , PN_LINK_LOCAL_CLOSE, xport-1, 16384, sessn-1, 262144, 2147483647, 0, 0, link-1, my_sender, recvr, 0, 0, , 100, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-1, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, dlvry-2, 1, 0, 0, 1
+, address_send: entry
+, address_send: something to send. size=37240
+, address_send: pending:0 = pn_session_outgoing_bytes()
+, address_send: sent:37240 = pn_link_send(size=37240)
+, address_send: a->size reduced to: 0
+, address_send: message complete: pn_delivery_settle()
+7.791, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 37240, link-2, my_receiver, sendr, 0, 0, , 0, 0, 1, 0
+7.791, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+, address_send: entry
+, address_send: sender blocked
+7.791, EXIT , PN_LINK_FLOW, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_LINK_REMOTE_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_LINK_REMOTE_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_SESSION_REMOTE_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_SESSION_REMOTE_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_CONNECTION_REMOTE_CLOSE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_CONNECTION_REMOTE_CLOSE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT_TAIL_CLOSED, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT_TAIL_CLOSED, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_LINK_LOCAL_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_LINK_LOCAL_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_SESSION_LOCAL_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_SESSION_LOCAL_CLOSE, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_CONNECTION_LOCAL_CLOSE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_CONNECTION_LOCAL_CLOSE, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, EXIT , PN_TRANSPORT, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.791, ENTER, PN_LINK_FINAL, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.792, EXIT , PN_LINK_FINAL, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, link-2, my_receiver, sendr, 0, 0, , 0, 0, 0, 0
+7.792, ENTER, PN_SESSION_FINAL, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.792, EXIT , PN_SESSION_FINAL, xport-2, 16384, sessn-2, 262144, 2147483647, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.792, ENTER, PN_TRANSPORT_HEAD_CLOSED, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.792, EXIT , PN_TRANSPORT_HEAD_CLOSED, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.792, ENTER, PN_TRANSPORT_CLOSED, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+7.792, EXIT , PN_TRANSPORT_CLOSED, xport-2, 16384, , 0, 0, 0, 0, , , , 0, 0, , 0, 0, 0, 0
+

@@ -29,6 +29,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MUTEX_PTHREAD
+#include "log_obj_namer.inc"
+
 /* Simple re-sizable vector that acts as a queue */
 #define VEC(T) struct { T* data; size_t len, cap; }
 
@@ -257,7 +260,7 @@ const int WINDOW=10;            /* Incoming credit window */
 
 static void handle(broker_t* b, pn_event_t* e) {
   pn_connection_t *c = pn_event_connection(e);
-
+  log_event(e, "ENTER");
   switch (pn_event_type(e)) {
 
    case PN_LISTENER_OPEN:
@@ -394,6 +397,7 @@ static void handle(broker_t* b, pn_event_t* e) {
    default:
     break;
   }
+  log_event(e, "EXIT ");
 }
 
 static void* broker_thread(void *void_broker) {
@@ -410,6 +414,9 @@ static void* broker_thread(void *void_broker) {
 }
 
 int main(int argc, char **argv) {
+  log_this_init();
+  printf("0.000, examples/c/broker\n");
+
   broker_t b = {0};
   b.proactor = pn_proactor();
   queues_init(&b.queues);
