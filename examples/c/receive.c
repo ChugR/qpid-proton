@@ -100,6 +100,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
        app->receiving.size += p;
        app->receiving.start = (char*)realloc(app->receiving.start, app->receiving.size);
        int recv = pn_link_recv(r, app->receiving.start + app->receiving.size - p, p);
+       if (recv == PN_ABORTED) break;
        if (recv < 0 && recv != PN_EOS) {
          fprintf(stderr, "PN_DELIVERY: pn_link_recv error %s\n", pn_code(recv));
          exit_code = 1;
@@ -107,14 +108,17 @@ static bool handle(app_data_t* app, pn_event_t* event) {
        }
      }
      if (!pn_delivery_partial(d)) {
-       decode_message(app->receiving);
-       app->receiving = pn_rwbytes_null;
-       /* Accept the delivery */
-       pn_delivery_update(d, PN_ACCEPTED);
-       /* done with the delivery, move to the next and free it */
-       pn_link_advance(r);
-       pn_delivery_settle(d);  /* d is now freed */
-
+       if (pn_delivery_aborted(d)) {
+         printf("message %d was aborted\n", app->received+1);
+       } else {
+         decode_message(app->receiving);
+         app->receiving = pn_rwbytes_null;
+         /* Accept the delivery */
+         pn_delivery_update(d, PN_ACCEPTED);
+         /* done with the delivery, move to the next and free it */
+         pn_link_advance(r);
+         pn_delivery_settle(d);  /* d is now freed */
+       }
        if (app->message_count == 0) {
          /* receive forever - see if more credit is needed */
          if (pn_link_credit(r) < BATCH/2) {

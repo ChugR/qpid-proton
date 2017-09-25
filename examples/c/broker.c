@@ -318,24 +318,35 @@ static void handle(broker_t* b, pn_event_t* e) {
      pn_delivery_t *d = pn_event_delivery(e);
      pn_link_t *r = pn_delivery_link(d);
      if (!pn_delivery_readable(d)) break;
+     bool aborted = false;
      for (size_t p = pn_delivery_pending(d); p > 0; p = pn_delivery_pending(d)) {
-       /* Append data to the reeving buffer */
+       /* Append data to the receiving buffer */
        b->receiving.size += p;
        b->receiving.start = (char*)realloc(b->receiving.start, b->receiving.size);
        int recv = pn_link_recv(r, b->receiving.start + b->receiving.size - p, p);
-       if (recv < 0 && recv != PN_EOS) {
-         fprintf(stderr, "PN_DELIVERY: pn_link_recv error %s\n", pn_code(recv));
-         break;
+       if (recv == PN_ABORTED) {
+           aborted = true;
+           break;
+       } else {
+         if (recv < 0 && recv != PN_EOS) {
+           fprintf(stderr, "PN_DELIVERY: pn_link_recv error %s\n", pn_code(recv));
+           break;
+         }
        }
      }
      if (!pn_delivery_partial(d)) {
-       /* The broker does not decode the message, just forwards it. */
-       const char *qname = pn_terminus_get_address(pn_link_target(r));
-       queue_receive(b->proactor, queues_get(&b->queues, qname), b->receiving);
-       b->receiving = pn_rwbytes_null;
-       pn_delivery_update(d, PN_ACCEPTED);
-       pn_delivery_settle(d);
-       pn_link_flow(r, WINDOW - pn_link_credit(r));
+       if (!aborted) {
+         /* The broker does not decode the message, just forwards it. */
+         const char *qname = pn_terminus_get_address(pn_link_target(r));
+         queue_receive(b->proactor, queues_get(&b->queues, qname), b->receiving);
+         b->receiving = pn_rwbytes_null;
+         pn_delivery_update(d, PN_ACCEPTED);
+         pn_delivery_settle(d);
+         pn_link_flow(r, WINDOW - pn_link_credit(r));
+       } else {
+         fprintf(stderr, "PN_DELIVERY: received aborted message\n");
+         b->receiving = pn_rwbytes_null;
+       }
      }
      break;
    }
