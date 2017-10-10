@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct app_data_t {
   const char *host, *port;
@@ -63,7 +64,8 @@ static void decode_message(pn_rwbytes_t data) {
     /* Print the decoded message */
     pn_string_t *s = pn_string(NULL);
     pn_inspect(pn_message_body(m), s);
-    printf("%s\n", pn_string_get(s));
+    /* printf("%s\n", pn_string_get(s)); // gack. don't print 80kbyte block of zeros */
+    printf("received string of length: %lu\n", strlen(pn_string_get(s)));
     pn_free(s);
     pn_message_free(m);
     free(data.start);

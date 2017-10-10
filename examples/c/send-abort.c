@@ -54,12 +54,13 @@ typedef struct app_data_t {
   const char *amqp_address;
   const char *container_id;
   int message_count;
+  int then_send_n_good;
 
   pn_proactor_t *proactor;
   pn_rwbytes_t message_buffer;
   int sent;
-  int aborted;
   bool in_progress;
+  pn_bytes_t msgbuf;
 } app_data_t;
 
 static int exit_code = 0;
@@ -80,6 +81,7 @@ static pn_bytes_t encode_message(app_data_t* app) {
   char data[MSG_SIZE + 11] = {0};
   pn_data_t* body;
   pn_data_put_int(pn_message_id(message), app->sent); /* Set the message_id also */
+
   body = pn_message_body(message);
   pn_data_enter(body);
   pn_data_put_string(body, pn_bytes(MSG_SIZE, data));
@@ -130,26 +132,38 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    case PN_LINK_FLOW: {
      /* The peer has given us some credit, now we can send messages */
      pn_link_t *sender = pn_event_link(event);
-     while (app->in_progress || (pn_link_credit(sender) > 0 && app->sent < app->message_count)) {
+     int total_to_send = app->message_count + app->then_send_n_good;
+     while (app->in_progress || (pn_link_credit(sender) > 0 && app->sent < total_to_send)) {
         if (!app->in_progress) {
-          pn_bytes_t msgbuf = encode_message(app);
+          app->msgbuf = encode_message(app);
           /* Use sent counter as unique delivery tag. */
           pn_delivery(sender, pn_dtag((const char *)&app->sent, sizeof(app->sent)));
-          pn_link_send(sender, msgbuf.start, msgbuf.size - HOLDBACK); /* Send some part of message */
+          pn_link_send(sender, app->msgbuf.start, app->msgbuf.size - HOLDBACK); /* Send some part of message */
           app->in_progress = true;
-          /* Return from this link flow event and abort the message on next, */
+          /* Return from this link flow event and abort or complete the message on next, */
           break;
         } else {
-          pn_delivery_t * pnd = pn_link_current(sender);
-          pn_delivery_abort(pnd);
-          /* aborted delivery is presettled and never ack'd. */
-          if (++app->aborted == app->message_count) {
-            printf("%d messages started and aborted\n", app->aborted);
-            pn_connection_close(pn_event_connection(event));
-            /* Continue handling events till we receive TRANSPORT_CLOSED */
+          if (app->sent < app->message_count) {
+            /* sending a batch of aborted messages */
+            pn_delivery_t * pnd = pn_link_current(sender);
+            pn_delivery_abort(pnd);
+            /* aborted delivery is presettled and never ack'd. */
+            if (app->sent + 1 == app->message_count) {
+                printf("%d messages started and aborted\n", app->message_count);
+            }
+          } else {
+            /* sending some good messages after the aborted batch */
+            pn_link_send(sender, app->msgbuf.start + app->msgbuf.size - HOLDBACK, HOLDBACK);
+            pn_link_advance(sender);
+            if (app->sent + 1 == total_to_send) {
+                printf("%d messages started and completed\n", app->then_send_n_good);
+            }
           }
           ++app->sent;
           app->in_progress = false;
+          if (app->sent == total_to_send) {
+            pn_connection_close(pn_event_connection(event));
+          }
         }
      }
      break;
@@ -215,6 +229,11 @@ int main(int argc, char **argv) {
   app.port = (argc > 2) ? argv[2] : "amqp";
   app.amqp_address = (argc > 3) ? argv[3] : "examples";
   app.message_count = (argc > 4) ? atoi(argv[4]) : 10;
+  app.then_send_n_good = (argc > 5) ? atoi(argv[5]) : 0;
+
+  if (app.message_count < 0) app.message_count = 10;
+  if (app.then_send_n_good < 0) app.then_send_n_good = 0;
+  if (app.message_count + app.then_send_n_good == 0) return exit_code;
 
   app.proactor = pn_proactor();
   pn_proactor_addr(addr, sizeof(addr), app.host, app.port);
