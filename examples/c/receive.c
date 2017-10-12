@@ -30,12 +30,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct app_data_t {
   const char *host, *port;
   const char *amqp_address;
   const char *container_id;
   int message_count;
+  int n_aborted;
 
   pn_proactor_t *proactor;
   int received;
@@ -61,14 +63,20 @@ static void decode_message(pn_rwbytes_t data) {
   int err = pn_message_decode(m, data.start, data.size);
   if (!err) {
     /* Print the decoded message */
+#define MAX_PRINT_LEN 200
+    int length;
+    char printbuf[MAX_PRINT_LEN + 1];
     pn_string_t *s = pn_string(NULL);
     pn_inspect(pn_message_body(m), s);
-    printf("%s\n", pn_string_get(s));
+    length = strlen(pn_string_get(s));
+    strncpy(printbuf, pn_string_get(s), MAX_PRINT_LEN);
+    printbuf[MAX_PRINT_LEN] = '\0';
+    printf("Message size=%d : %s\n", length, printbuf);
     pn_free(s);
     pn_message_free(m);
     free(data.start);
   } else {
-    fprintf(stderr, "decode_message: %s\n", pn_code(err));
+    fprintf(stderr, "decode_message error: %s\n", pn_code(err));
     exit_code = 1;
   }
 }
@@ -105,7 +113,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
        m->start = (char*)realloc(m->start, m->size);
        recv = pn_link_recv(l, m->start + oldsize, m->size);
        if (recv == PN_ABORTED) {
-         fprintf(stderr, "Message aborted\n");
+         fprintf(stderr, "Message aborted: %d\n", ++app->n_aborted);
          m->size = 0;           /* Forget the data we accumulated */
          pn_delivery_settle(d); /* Free the delivery so we can receive the next message */
          pn_link_flow(l, 1);    /* Replace credit for aborted message */
