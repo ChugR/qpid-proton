@@ -19,6 +19,11 @@
  *
  */
 
+// HACK ALERT: not hello world. is open/close demon
+//
+// helloworld //127.0.0.1:5672 1000
+//            url              connection open count
+
 #include <proton/connection.hpp>
 #include <proton/container.hpp>
 #include <proton/delivery.hpp>
@@ -43,29 +48,19 @@ class hello_world : public proton::messaging_handler {
     }
 
     void on_connection_open(proton::connection& c) OVERRIDE {
-        c.open_receiver(addr_);
-        c.open_sender(addr_);
-    }
-
-    void on_sendable(proton::sender &s) OVERRIDE {
-        proton::message m("Hello World!");
-        s.send(m);
-        s.close();
-    }
-
-    void on_message(proton::delivery &d, proton::message &m) OVERRIDE {
-        std::cout << m.body() << std::endl;
-        d.connection().close();
+        c.close();
     }
 };
 
 int main(int argc, char **argv) {
     try {
-        std::string conn_url = argc > 1 ? argv[1] : "//127.0.0.1:5672";
-        std::string addr = argc > 2 ? argv[2] : "examples";
+        std::string conn_url = argc > 1 ? argv[1]       : "//127.0.0.1:5672";
+        int count            = argc > 2 ? atoi(argv[2]) : 1000;
 
-        hello_world hw(conn_url, addr);
-        proton::container(hw).run();
+        for (int i=0; i<count; i++) {
+            hello_world hw(conn_url, "");
+            proton::container(hw).run();
+        }
 
         return 0;
     } catch (const std::exception& e) {
