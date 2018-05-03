@@ -60,6 +60,7 @@ endif()
 
 # Single-threaded examples that work on C++03
 foreach(example
+    amqp-open-close
     broker
     helloworld
     simple_connect
