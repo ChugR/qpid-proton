@@ -29,6 +29,7 @@
 #include <proton/message.hpp>
 #include <proton/message_id.hpp>
 #include <proton/messaging_handler.hpp>
+#include <proton/receiver_options.hpp>
 #include <proton/value.hpp>
 
 #include <iostream>
@@ -51,9 +52,11 @@ class simple_recv : public proton::messaging_handler {
 
     void on_container_start(proton::container &c) OVERRIDE {
         proton::connection_options co;
+        proton::receiver_options ro;
         if (!user.empty()) co.user(user);
         if (!password.empty()) co.password(password);
-        receiver = c.open_receiver(url, co);
+        ro.credit_window(1000);
+        receiver = c.open_receiver(url, ro, co);
     }
 
     void on_message(proton::delivery &d, proton::message &msg) OVERRIDE {
@@ -62,7 +65,7 @@ class simple_recv : public proton::messaging_handler {
         }
 
         if (expected == 0 || received < expected) {
-            std::cout << msg.body() << std::endl;
+            //std::cout << msg.body() << std::endl;
             received++;
 
             if (received == expected) {
