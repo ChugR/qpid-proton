@@ -63,7 +63,53 @@ class simple_send : public proton::messaging_handler {
             m["sequence"] = sent + 1;
 
             msg.id(sent + 1);
+#define SEND_BIG_STRING 1
+#if SEND_MAP
             msg.body(m);
+#endif
+#if SEND_BIG_STRING
+            msg.body(
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+                );
+#endif
 
             s.send(msg);
             sent++;
