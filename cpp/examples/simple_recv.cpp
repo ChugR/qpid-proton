@@ -65,7 +65,7 @@ class simple_recv : public proton::messaging_handler {
         }
 
         if (expected == 0 || received < expected) {
-            //std::cout << msg.body() << std::endl;
+            std::cout << (received+1) << " - " << msg.body() << std::endl;
             received++;
 
             if (received == expected) {
