@@ -36,6 +36,8 @@
 
 #include "fake_cpp11.hpp"
 
+#define TICK_INTERVAL 1000
+
 class simple_recv : public proton::messaging_handler {
   private:
     std::string url;
@@ -44,10 +46,15 @@ class simple_recv : public proton::messaging_handler {
     proton::receiver receiver;
     int expected;
     int received;
+    bool tick;
 
   public:
-    simple_recv(const std::string &s, const std::string &u, const std::string &p, int c) :
-        url(s), user(u), password(p), expected(c), received(0) {}
+    simple_recv(const std::string &s, const std::string &u, const std::string &p, int c, bool t) :
+        url(s), user(u), password(p), expected(c), received(0), tick(t) {}
+
+    void ticktock() {
+        std::cout << "Received: " << received << std::endl;
+    }
 
     void on_container_start(proton::container &c) OVERRIDE {
         proton::connection_options co;
@@ -57,17 +64,22 @@ class simple_recv : public proton::messaging_handler {
     }
 
     void on_message(proton::delivery &d, proton::message &msg) OVERRIDE {
-        if (!msg.id().empty() && proton::coerce<int>(msg.id()) < received) {
-            return; // Ignore if no id or duplicate
+        //if (!msg.id().empty() && proton::coerce<int>(msg.id()) < received) {
+        //    return; // Ignore if no id or duplicate
+        //}
+        received++;
+
+        if (tick && (received % TICK_INTERVAL) == 0) {
+            ticktock();
         }
 
-        if (expected == 0 || received < expected) {
-            std::cout << msg.body() << std::endl;
-            received++;
+        if (expected == 0 || received < expected + 1) {
+            // another flag to turn this on: std::cout << msg.body() << std::endl;
 
             if (received == expected) {
                 d.receiver().close();
                 d.connection().close();
+                ticktock();
             }
         }
     }
@@ -78,18 +90,20 @@ int main(int argc, char **argv) {
     std::string user;
     std::string password;
     int message_count = 100;
+    bool ticks;
     example::options opts(argc, argv);
 
     opts.add_value(address, 'a', "address", "connect to and receive from URL", "URL");
     opts.add_value(message_count, 'm', "messages", "receive COUNT messages", "COUNT");
     opts.add_value(user, 'u', "user", "authenticate as USER", "USER");
     opts.add_value(password, 'p', "password", "authenticate with PASSWORD", "PASSWORD");
+    opts.add_flag(ticks, 't', "ticks-inhibit", "do not print progress every 1000th message");
 
 
     try {
         opts.parse();
 
-        simple_recv recv(address, user, password, message_count);
+        simple_recv recv(address, user, password, message_count, !ticks);
         proton::container(recv).run();
 
         return 0;
