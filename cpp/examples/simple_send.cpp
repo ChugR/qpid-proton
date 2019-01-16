@@ -35,6 +35,8 @@
 
 #include "fake_cpp11.hpp"
 
+#define TICK_INTERVAL 1000
+
 class simple_send : public proton::messaging_handler {
   private:
     std::string url;
@@ -44,10 +46,18 @@ class simple_send : public proton::messaging_handler {
     int sent;
     int confirmed;
     int total;
+    bool tick;
+    int rejected;
+    int released;
 
   public:
-    simple_send(const std::string &s, const std::string &u, const std::string &p, int c) :
-        url(s), user(u), password(p), sent(0), confirmed(0), total(c) {}
+    simple_send(const std::string &s, const std::string &u, const std::string &p, int c, bool t) :
+        url(s), user(u), password(p), sent(0), confirmed(0), total(c), tick(t), rejected(0), released(0) {}
+
+    void ticktock() {
+        std::cout << "Sent: " << sent << ", Confirmed: " << confirmed << ", Rejected: " <<
+            rejected << ", Released: " << released << std::endl;
+    }
 
     void on_container_start(proton::container &c) OVERRIDE {
         proton::connection_options co;
@@ -73,6 +83,9 @@ class simple_send : public proton::messaging_handler {
 
             s.send(msg);
             sent++;
+            if (tick && (sent % TICK_INTERVAL) == 0) {
+                ticktock();
+            }
         }
     }
 
@@ -82,8 +95,45 @@ class simple_send : public proton::messaging_handler {
         if (confirmed == total) {
             std::cout << "all messages confirmed" << std::endl;
             t.connection().close();
+            ticktock();
+        } else {
+            if (tick && (confirmed % TICK_INTERVAL) == 0) {
+                ticktock();
+            }
         }
     }
+
+    void on_tracker_reject(proton::tracker &t) OVERRIDE {
+        confirmed++;
+        rejected++;
+
+        if (confirmed == total) {
+            std::cout << "all messages confirmed" << std::endl;
+            t.connection().close();
+            ticktock();
+        } else {
+            if (tick && (confirmed % TICK_INTERVAL) == 0) {
+                ticktock();
+            }
+        }
+    }
+
+    void on_tracker_release(proton::tracker &t) OVERRIDE {
+        confirmed++;
+        released++;
+
+        if (confirmed == total) {
+            std::cout << "all messages confirmed" << std::endl;
+            t.connection().close();
+            ticktock();
+        } else {
+            if (tick && (confirmed % TICK_INTERVAL) == 0) {
+                ticktock();
+            }
+        }
+    }
+
+
 
     void on_transport_close(proton::transport &) OVERRIDE {
         sent = confirmed;
@@ -95,17 +145,19 @@ int main(int argc, char **argv) {
     std::string user;
     std::string password;
     int message_count = 100;
+    bool ticks;
     example::options opts(argc, argv);
 
     opts.add_value(address, 'a', "address", "connect and send to URL", "URL");
     opts.add_value(message_count, 'm', "messages", "send COUNT messages", "COUNT");
     opts.add_value(user, 'u', "user", "authenticate as USER", "USER");
     opts.add_value(password, 'p', "password", "authenticate with PASSWORD", "PASSWORD");
+    opts.add_flag(ticks, 't', "ticks-inhibit", "do not print progress every 1000th message");
 
     try {
         opts.parse();
-
-        simple_send send(address, user, password, message_count);
+        std::cout << "And the ticks var is: " << ticks << std::endl;
+        simple_send send(address, user, password, message_count, !ticks);
         proton::container(send).run();
 
         return 0;
