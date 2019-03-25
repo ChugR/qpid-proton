@@ -23,6 +23,7 @@ import errno
 import socket
 import select
 import time
+from . import _compat
 
 PN_INVALID_SOCKET = -1
 
@@ -135,7 +136,7 @@ class IO(object):
             try:
                 r, w, _ = select_inner(timeout)
             except select.error as e:
-                if e[0] != errno.EINTR:
+                if select_errno(e) != errno.EINTR:
                     raise
                 r, w = ([], [])
 
