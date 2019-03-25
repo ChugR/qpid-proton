@@ -23,7 +23,7 @@ import errno
 import socket
 import select
 import time
-from . import _compat
+from ._compat import select_errno
 
 PN_INVALID_SOCKET = -1
 
