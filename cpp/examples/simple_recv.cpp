@@ -29,6 +29,7 @@
 #include <proton/message.hpp>
 #include <proton/message_id.hpp>
 #include <proton/messaging_handler.hpp>
+#include <proton/receiver_options.hpp>
 #include <proton/value.hpp>
 
 #include <iostream>
@@ -47,10 +48,11 @@ class simple_recv : public proton::messaging_handler {
     int expected;
     int received;
     bool tick;
+    int credit;
 
   public:
-    simple_recv(const std::string &s, const std::string &u, const std::string &p, int c, bool t) :
-        url(s), user(u), password(p), expected(c), received(0), tick(t) {}
+    simple_recv(const std::string &s, const std::string &u, const std::string &p, int c, bool t, int cr) :
+        url(s), user(u), password(p), expected(c), received(0), tick(t), credit(cr) {}
 
     void ticktock() {
         std::cout << "Received: " << received << std::endl;
@@ -60,7 +62,8 @@ class simple_recv : public proton::messaging_handler {
         proton::connection_options co;
         if (!user.empty()) co.user(user);
         if (!password.empty()) co.password(password);
-        receiver = c.open_receiver(url, co);
+        if (credit <= 0) credit = 10;
+        receiver = c.open_receiver(url, proton::receiver_options().credit_window(credit), co);
     }
 
     void on_message(proton::delivery &d, proton::message &msg) OVERRIDE {
@@ -91,19 +94,20 @@ int main(int argc, char **argv) {
     std::string password;
     int message_count = 100;
     bool ticks;
+    int credit = 10;
     example::options opts(argc, argv);
 
-    opts.add_value(address, 'a', "address", "connect to and receive from URL", "URL");
-    opts.add_value(message_count, 'm', "messages", "receive COUNT messages", "COUNT");
-    opts.add_value(user, 'u', "user", "authenticate as USER", "USER");
-    opts.add_value(password, 'p', "password", "authenticate with PASSWORD", "PASSWORD");
-    opts.add_flag(ticks, 't', "ticks-inhibit", "do not print progress every 1000th message");
-
+    opts.add_value(address,       'a', "address",       "connect to and receive from URL",           "URL");
+    opts.add_value(message_count, 'm', "messages",      "receive COUNT messages",                    "COUNT");
+    opts.add_value(user,          'u', "user",          "authenticate as USER",                      "USER");
+    opts.add_value(password,      'p', "password",      "authenticate with PASSWORD",                "PASSWORD");
+    opts.add_flag(ticks,          't', "ticks-inhibit", "do not print progress every 1000th message");
+    opts.add_value(credit,        'c', "credit",        "initial credit and auto refresh",           "CREDIT");
 
     try {
         opts.parse();
 
-        simple_recv recv(address, user, password, message_count, !ticks);
+        simple_recv recv(address, user, password, message_count, !ticks, credit);
         proton::container(recv).run();
 
         return 0;
