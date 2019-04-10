@@ -47,12 +47,13 @@ class simple_send : public proton::messaging_handler {
     int confirmed;
     int total;
     bool tick;
+    std::string id;
     int rejected;
     int released;
 
   public:
-    simple_send(const std::string &s, const std::string &u, const std::string &p, int c, bool t) :
-        url(s), user(u), password(p), sent(0), confirmed(0), total(c), tick(t), rejected(0), released(0) {}
+    simple_send(const std::string &s, const std::string &u, const std::string &p, int c, bool t, const std::string &i) :
+        url(s), user(u), password(p), sent(0), confirmed(0), total(c), tick(t), id(i), rejected(0), released(0) {}
 
     void ticktock() {
         std::cout << "Sent: " << sent << ", Confirmed: " << confirmed << ", Rejected: " <<
@@ -75,10 +76,10 @@ class simple_send : public proton::messaging_handler {
     void on_sendable(proton::sender &s) OVERRIDE {
         while (s.credit() && sent < total) {
             proton::message msg;
-            std::map<std::string, int> m;
-            m["sequence"] = sent + 1;
+            int nsent = sent + 1;
+            std::string m = id + std::to_string(nsent);
 
-            msg.id(sent + 1);
+            msg.id(nsent);
             msg.body(m);
 
             s.send(msg);
@@ -146,18 +147,19 @@ int main(int argc, char **argv) {
     std::string password;
     int message_count = 100;
     bool ticks;
+    std::string idprefix;
     example::options opts(argc, argv);
 
-    opts.add_value(address, 'a', "address", "connect and send to URL", "URL");
-    opts.add_value(message_count, 'm', "messages", "send COUNT messages", "COUNT");
-    opts.add_value(user, 'u', "user", "authenticate as USER", "USER");
-    opts.add_value(password, 'p', "password", "authenticate with PASSWORD", "PASSWORD");
-    opts.add_flag(ticks, 't', "ticks-inhibit", "do not print progress every 1000th message");
+    opts.add_value(      address, 'a', "address",       "connect and send to URL",                   "URL");
+    opts.add_value(message_count, 'm', "messages",      "send COUNT messages",                       "COUNT");
+    opts.add_value(         user, 'u', "user",          "authenticate as USER",                      "USER");
+    opts.add_value(     password, 'p', "password",      "authenticate with PASSWORD",                "PASSWORD");
+    opts.add_flag(         ticks, 't', "ticks-inhibit", "do not print progress every 1000th message");
+    opts.add_value(     idprefix, 'i', "id-prefix",     "content identifying prefix",                "IDPREFIX");
 
     try {
         opts.parse();
-        std::cout << "And the ticks var is: " << ticks << std::endl;
-        simple_send send(address, user, password, message_count, !ticks);
+        simple_send send(address, user, password, message_count, !ticks, idprefix);
         proton::container(send).run();
 
         return 0;
