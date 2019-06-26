@@ -44,16 +44,19 @@ class simple_send : public proton::messaging_handler {
     int sent;
     int confirmed;
     int total;
+    bool presettled;
+    bool conn_open;
 
   public:
-    simple_send(const std::string &s, const std::string &u, const std::string &p, int c) :
-        url(s), user(u), password(p), sent(0), confirmed(0), total(c) {}
+    simple_send(const std::string &s, const std::string &u, const std::string &p, int c, bool ps) :
+        url(s), user(u), password(p), sent(0), confirmed(0), total(c), presettled(ps), conn_open(false) {}
 
     void on_container_start(proton::container &c) OVERRIDE {
         proton::connection_options co;
         if (!user.empty()) co.user(user);
         if (!password.empty()) co.password(password);
         sender = c.open_sender(url, co);
+        conn_open = true;
     }
 
     void on_connection_open(proton::connection& c) OVERRIDE {
@@ -71,15 +74,24 @@ class simple_send : public proton::messaging_handler {
             msg.id(sent + 1);
             msg.body(m);
 
-            s.send(msg);
+            proton::tracker t = s.send(msg);
+            if (presettled) {
+                t.settle();
+                confirmed++;
+            }
             sent++;
+        }
+        if (presettled && s.credit() && sent == total && conn_open) {
+            std::cout << "all messages presettled" << std::endl;
+            s.connection().close();
+            conn_open = false;
         }
     }
 
     void on_tracker_accept(proton::tracker &t) OVERRIDE {
         confirmed++;
 
-        if (confirmed == total) {
+        if (!presettled && confirmed == total) {
             std::cout << "all messages confirmed" << std::endl;
             t.connection().close();
         }
@@ -94,6 +106,7 @@ int main(int argc, char **argv) {
     std::string address("127.0.0.1:5672/examples");
     std::string user;
     std::string password;
+    bool presettled;
     int message_count = 100;
     example::options opts(argc, argv);
 
@@ -101,11 +114,12 @@ int main(int argc, char **argv) {
     opts.add_value(message_count, 'm', "messages", "send COUNT messages", "COUNT");
     opts.add_value(user, 'u', "user", "authenticate as USER", "USER");
     opts.add_value(password, 'p', "password", "authenticate with PASSWORD", "PASSWORD");
+    opts.add_flag(presettled, 'r', "presettled", "send presettled messages");
 
     try {
         opts.parse();
 
-        simple_send send(address, user, password, message_count);
+        simple_send send(address, user, password, message_count, presettled);
         proton::container(send).run();
 
         return 0;
