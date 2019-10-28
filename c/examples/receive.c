@@ -38,12 +38,7 @@ typedef struct app_data_t {
   int message_count;
 
   pn_proactor_t *proactor;
-  int received;
-  bool finished;
-  pn_rwbytes_t msgin;       /* Partially received message */
 } app_data_t;
-
-static const int BATCH = 1000; /* Batch size for unlimited receive */
 
 static int exit_code = 0;
 
@@ -52,23 +47,6 @@ static void check_condition(pn_event_t *e, pn_condition_t *cond) {
     fprintf(stderr, "%s: %s: %s\n", pn_event_type_name(pn_event_type(e)),
             pn_condition_get_name(cond), pn_condition_get_description(cond));
     pn_connection_close(pn_event_connection(e));
-    exit_code = 1;
-  }
-}
-
-static void decode_message(pn_rwbytes_t data) {
-  pn_message_t *m = pn_message();
-  int err = pn_message_decode(m, data.start, data.size);
-  if (!err) {
-    /* Print the decoded message */
-    pn_string_t *s = pn_string(NULL);
-    pn_inspect(pn_message_body(m), s);
-    printf("%s\n", pn_string_get(s));
-    pn_free(s);
-    pn_message_free(m);
-    free(data.start);
-  } else {
-    fprintf(stderr, "decode_message: %s\n", pn_code(err));
     exit_code = 1;
   }
 }
@@ -87,54 +65,8 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      pn_link_t* l = pn_receiver(s, "my_receiver");
      pn_terminus_set_address(pn_link_source(l), app->amqp_address);
      pn_link_open(l);
-     /* cannot receive without granting credit: */
-     pn_link_flow(l, app->message_count ? app->message_count : BATCH);
      }
    } break;
-
-   case PN_DELIVERY: {
-     /* A message (or part of a message) has been received */
-     pn_delivery_t *d = pn_event_delivery(event);
-     if (pn_delivery_readable(d)) {
-       pn_link_t *l = pn_delivery_link(d);
-       size_t size = pn_delivery_pending(d);
-       pn_rwbytes_t* m = &app->msgin; /* Append data to incoming message buffer */
-       int recv;
-       size_t oldsize = m->size;
-       m->size += size;
-       m->start = (char*)realloc(m->start, m->size);
-       recv = pn_link_recv(l, m->start + oldsize, m->size);
-       if (recv == PN_ABORTED) {
-         printf("Message aborted\n");
-         m->size = 0;           /* Forget the data we accumulated */
-         pn_delivery_settle(d); /* Free the delivery so we can receive the next message */
-         pn_link_flow(l, 1);    /* Replace credit for aborted message */
-       } else if (recv < 0 && recv != PN_EOS) {        /* Unexpected error */
-         pn_condition_format(pn_link_condition(l), "broker", "PN_DELIVERY error: %s", pn_code(recv));
-         pn_link_close(l);               /* Unexpected error, close the link */
-       } else if (!pn_delivery_partial(d)) { /* Message is complete */
-         decode_message(*m);
-         *m = pn_rwbytes_null;  /* Reset the buffer for the next message*/
-         /* Accept the delivery */
-         pn_delivery_update(d, PN_ACCEPTED);
-         pn_delivery_settle(d);  /* settle and free d */
-         if (app->message_count == 0) {
-           /* receive forever - see if more credit is needed */
-           if (pn_link_credit(l) < BATCH/2) {
-             /* Grant enough credit to bring it up to BATCH: */
-             pn_link_flow(l, BATCH - pn_link_credit(l));
-           }
-         } else if (++app->received >= app->message_count) {
-           pn_session_t *ssn = pn_link_session(l);
-           printf("%d messages received\n", app->received);
-           pn_link_close(l);
-           pn_session_close(ssn);
-           pn_connection_close(pn_session_connection(ssn));
-         }
-       }
-     }
-     break;
-   }
 
    case PN_TRANSPORT_CLOSED:
     check_condition(event, pn_transport_condition(pn_event_transport(event)));
