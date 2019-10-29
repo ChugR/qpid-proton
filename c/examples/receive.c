@@ -19,6 +19,12 @@
  *
  */
 
+/*
+ * hacked to trigger stream of policy link denials on one connection/
+ * session.
+ *              host      port addr n-tries print-every-n
+ * $bin/receive 127.0.0.1 5672 xyz  1000000 1000
+ */
 #include <proton/connection.h>
 #include <proton/condition.h>
 #include <proton/delivery.h>
@@ -35,24 +41,34 @@ typedef struct app_data_t {
   const char *host, *port;
   const char *amqp_address;
   const char *container_id;
-  int message_count;
+  int count;
+  int n_opened;
+  int n_detached;
+  int n_detached_w_condition;
+  int print_upcount;
+  int print_every_n;
 
   pn_proactor_t *proactor;
 } app_data_t;
 
 static int exit_code = 0;
 
-static void check_condition(pn_event_t *e, pn_condition_t *cond) {
+/* Return if-condition-is-set */
+static bool check_condition(pn_event_t *e, pn_condition_t *cond) {
+  bool isset = false;
   if (pn_condition_is_set(cond)) {
     fprintf(stderr, "%s: %s: %s\n", pn_event_type_name(pn_event_type(e)),
             pn_condition_get_name(cond), pn_condition_get_description(cond));
-    pn_connection_close(pn_event_connection(e));
-    exit_code = 1;
+    isset = true;
   }
+  return isset;
 }
 
 /* Return true to continue, false to exit */
 static bool handle(app_data_t* app, pn_event_t* event) {
+  /*
+   * fprintf(stderr, "EVENT: %s\n", pn_event_type_name(pn_event_type(event)));
+   */
   switch (pn_event_type(event)) {
 
    case PN_CONNECTION_INIT: {
@@ -65,6 +81,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      pn_link_t* l = pn_receiver(s, "my_receiver");
      pn_terminus_set_address(pn_link_source(l), app->amqp_address);
      pn_link_open(l);
+     app->n_opened++;
      }
    } break;
 
@@ -83,10 +100,44 @@ static bool handle(app_data_t* app, pn_event_t* event) {
     break;
 
    case PN_LINK_REMOTE_CLOSE:
+    app->n_detached++;
+    pn_link_detach(pn_event_link(event));
+    pn_link_close(pn_event_link(event));
+    pn_link_free(pn_event_link(event));
+    {
+    pn_condition_t *cond = pn_link_remote_condition(pn_event_link(event));
+    if (pn_condition_is_set(cond)) {
+        /* Remote link detached. Expected. Close existing link.*/
+        app->n_detached_w_condition++;
+        app->print_upcount++;
+        if (app->print_upcount == app->print_every_n) {
+            app->print_upcount = 0;
+            fprintf(stderr, "Detached link %d: %s: %s\n", app->n_detached, 
+                    pn_condition_get_name(cond), pn_condition_get_description(cond));
+        }
+    } else {
+        fprintf(stderr, "Detached with no error??? link number: %d", app->n_detached);
+    }
+    }
+    break;
+
+   /* case PN_LINK_LOCAL_CLOSE: */
+   case PN_LINK_FINAL:
+    if (app->n_opened < app->count) {
+        pn_link_t* l = pn_receiver(pn_event_session(event), "my_receiver");
+        pn_terminus_set_address(pn_link_source(l), app->amqp_address);
+        pn_link_open(l);
+        app->n_opened++;
+    } else {
+        pn_connection_close(pn_event_connection(event));
+    }
+    break;
+
    case PN_LINK_REMOTE_DETACH:
     check_condition(event, pn_link_remote_condition(pn_event_link(event)));
     pn_connection_close(pn_event_connection(event));
     break;
+
 
    case PN_PROACTOR_INACTIVE:
     return false;
@@ -120,7 +171,8 @@ int main(int argc, char **argv) {
   app.host = (argc > 1) ? argv[1] : "";
   app.port = (argc > 2) ? argv[2] : "amqp";
   app.amqp_address = (argc > 3) ? argv[3] : "examples";
-  app.message_count = (argc > 4) ? atoi(argv[4]) : 10;
+  app.count = (argc > 4) ? atoi(argv[4]) : 10;
+  app.print_every_n = (argc > 5) ? atoi(argv[5]) : 1;
 
   /* Create the proactor and connect */
   app.proactor = pn_proactor();
