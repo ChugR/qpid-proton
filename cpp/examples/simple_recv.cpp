@@ -36,8 +36,24 @@
 #include <map>
 
 #include "fake_cpp11.hpp"
+#include <chrono>
 
 #define TICK_INTERVAL 1000
+
+std::string getCurrentTimestamp() {
+    using std::chrono::system_clock;
+    auto currentTime = std::chrono::system_clock::now();
+    char buf1[80];
+    char buf2[80];
+    auto transformed = currentTime.time_since_epoch().count() / 1000;
+    auto usec = transformed % 1000000;
+    std::time_t tt;
+    tt = system_clock::to_time_t ( currentTime );
+    auto timeinfo = localtime ( &tt );
+    strftime (buf1, 80, "%F %H:%M:%S", timeinfo);
+    sprintf(buf2, "%s:%06d", buf1, (int)usec);
+    return std::string(buf2);
+}
 
 class simple_recv : public proton::messaging_handler {
   private:
@@ -55,7 +71,7 @@ class simple_recv : public proton::messaging_handler {
         url(s), user(u), password(p), expected(c), received(0), tick(t), credit(cr) {}
 
     void ticktock() {
-        std::cout << "Received: " << received << std::endl;
+        std::cout << getCurrentTimestamp() << " Received: " << received << std::endl;
     }
 
     void on_container_start(proton::container &c) OVERRIDE {

@@ -34,8 +34,24 @@
 #include <map>
 
 #include "fake_cpp11.hpp"
+#include <chrono>
 
 #define TICK_INTERVAL 1000
+
+std::string getCurrentTimestamp() {
+    using std::chrono::system_clock;
+    auto currentTime = std::chrono::system_clock::now();
+    char buf1[80];
+    char buf2[80];
+    auto transformed = currentTime.time_since_epoch().count() / 1000;
+    auto usec = transformed % 1000000;
+    std::time_t tt;
+    tt = system_clock::to_time_t ( currentTime );
+    auto timeinfo = localtime ( &tt );
+    strftime (buf1, 80, "%F %H:%M:%S", timeinfo);
+    sprintf(buf2, "%s:%06d", buf1, (int)usec);
+    return std::string(buf2);
+}
 
 class simple_send : public proton::messaging_handler {
   private:
@@ -48,15 +64,17 @@ class simple_send : public proton::messaging_handler {
     int total;
     bool tick;
     std::string id;
+    int accepted;
     int rejected;
     int released;
 
   public:
     simple_send(const std::string &s, const std::string &u, const std::string &p, int c, bool t, const std::string &i) :
-        url(s), user(u), password(p), sent(0), confirmed(0), total(c), tick(t), id(i), rejected(0), released(0) {}
+        url(s), user(u), password(p), sent(0), confirmed(0), total(c), tick(t), id(i), accepted(0), rejected(0), released(0) {}
 
     void ticktock() {
-        std::cout << "Sent: " << sent << ", Confirmed: " << confirmed << ", Rejected: " <<
+        std::cout << getCurrentTimestamp() << " Sent: " << sent << ", Confirmed: " << confirmed << 
+            ", Accepted: " << accepted << ", Rejected: " <<
             rejected << ", Released: " << released << std::endl;
     }
 
@@ -92,6 +110,7 @@ class simple_send : public proton::messaging_handler {
 
     void on_tracker_accept(proton::tracker &t) OVERRIDE {
         confirmed++;
+        accepted++;
 
         if (confirmed == total) {
             std::cout << "all messages confirmed" << std::endl;
@@ -133,8 +152,6 @@ class simple_send : public proton::messaging_handler {
             }
         }
     }
-
-
 
     void on_transport_close(proton::transport &) OVERRIDE {
         sent = confirmed;
