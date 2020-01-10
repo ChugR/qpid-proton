@@ -51,7 +51,7 @@ std::string getCurrentTimestamp() {
     tt = system_clock::to_time_t ( currentTime );
     auto timeinfo = localtime ( &tt );
     strftime (buf1, 80, "%F %H:%M:%S", timeinfo);
-    sprintf(buf2, "%s:%06d", buf1, (int)usec);
+    sprintf(buf2, "%s.%06d", buf1, (int)usec);
     return std::string(buf2);
 }
 
