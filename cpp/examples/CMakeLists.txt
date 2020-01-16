@@ -80,7 +80,8 @@ foreach(example
     flow_control
     ssl
     ssl_client_cert
-    encode_decode)
+    encode_decode
+    qdr_moad_recv)
   add_executable(${example} ${example}.cpp)
 endforeach()
 
