@@ -45,8 +45,24 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <chrono>
 
 #include "fake_cpp11.hpp"
+
+std::string tod() {
+    using std::chrono::system_clock;
+    auto currentTime = std::chrono::system_clock::now();
+    char buf1[80];
+    char buf2[80];
+    auto transformed = currentTime.time_since_epoch().count() / 1000;
+    auto usec = transformed % 1000000;
+    std::time_t tt;
+    tt = system_clock::to_time_t ( currentTime );
+    auto timeinfo = localtime ( &tt );
+    strftime (buf1, 80, "%F %H:%M:%S", timeinfo);
+    sprintf(buf2, "%s.%06d", buf1, (int)usec);
+    return std::string(buf2);
+}
 
 class moad_recv : public proton::messaging_handler {
   private:
@@ -58,14 +74,16 @@ class moad_recv : public proton::messaging_handler {
     int a_count;
     proton::connection connection;
     std::vector<proton::receiver> receivers;
+    int n_open_receivers;
     int expected;
     int received;
 
   public:
     moad_recv(const std::string &s, const std::string &u, const std::string &p, int c, const std::string &ap, int al, int ac) :
-        url(s), user(u), password(p), a_prefix(ap), a_length(al), a_count(ac), expected(c), received(0) {}
+        url(s), user(u), password(p), a_prefix(ap), a_length(al), a_count(ac), n_open_receivers(0), expected(c), received(0) {}
 
     void on_container_start(proton::container &c) OVERRIDE {
+        std::cout << tod() << " on_container_start: opening connection" << std::endl;
         proton::connection_options co;
         if (!user.empty()) co.user(user);
         if (!password.empty()) co.password(password);
@@ -78,7 +96,7 @@ class moad_recv : public proton::messaging_handler {
         int padlen = a_length - (int)a_prefix.length() - 8;
         std::string pad(padlen, 'x');
         if (a_count <= 0) a_count = 1;
-        std::cout << "Creating " << a_count << " receivers with prefix '" << a_prefix << "' and length " << a_length << std::endl;
+        std::cout << tod() << " on_connection_open: creating " << a_count << " receivers with prefix '" << a_prefix << "' and length " << a_length << std::endl;
         
         // Loop to create the receivers.
         // This loop loads proton's work queue with things to do.
@@ -93,10 +111,23 @@ class moad_recv : public proton::messaging_handler {
             address.append(pad);
             receivers.push_back(conn.open_receiver(address));
             if (i % 100 == 0) {
-                std::cout << "Created receiver " << i << std::endl;
+                std::cout << tod() << " Created receiver " << i << std::endl;
             }
         }
-        std::cout << "Created " << a_count << " receivers" << std::endl;
+        std::cout << tod() << " Exiting on_connection_open. Created " << a_count << " receivers" << std::endl;
+    }
+
+    void on_receiver_open(proton::receiver & ) OVERRIDE {
+        if (n_open_receivers == 0) {
+            std::cout << tod() << " on_receiver_open: First receiver opened." << std::endl;
+        }
+        n_open_receivers++;
+        if (n_open_receivers % 100 == 0) {
+            std::cout << tod() << " Open receivers: " << n_open_receivers << std::endl;
+        }
+        if (n_open_receivers == a_count) {
+            std::cout << tod() << " All receivers are open." << std::endl;
+        }
     }
     
     void on_message(proton::delivery &d, proton::message &msg) OVERRIDE {
