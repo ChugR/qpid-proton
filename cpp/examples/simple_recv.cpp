@@ -50,10 +50,23 @@ class simple_recv : public proton::messaging_handler {
         url(s), user(u), password(p), expected(c), received(0) {}
 
     void on_container_start(proton::container &c) OVERRIDE {
+        std::cout << "container start" << std::endl;
         proton::connection_options co;
         if (!user.empty()) co.user(user);
         if (!password.empty()) co.password(password);
         receiver = c.open_receiver(url, co);
+    }
+    
+    void on_connection_open(proton::connection & ) OVERRIDE {
+        std::cout << "connection open" << std::endl;
+    }
+
+    void on_receiver_open(proton::receiver & ) OVERRIDE {
+        std::cout << "receiver open" << std::endl;
+    }
+
+    void on_sender_open(proton::sender & ) OVERRIDE {
+        std::cout << "sender open" << std::endl;
     }
 
     void on_message(proton::delivery &d, proton::message &msg) OVERRIDE {
