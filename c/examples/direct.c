@@ -51,7 +51,6 @@ typedef struct app_data_t {
 
   /* Receiver values */
   int received;
-  pn_connection_t *connection;
 } app_data_t;
 
 static const int BATCH = 1000; /* Batch size for unlimited receive */
@@ -155,10 +154,10 @@ static void handle_receive(app_data_t *app, pn_event_t* event) {
             pn_link_close(l);
             /* set condition and close the connection */
             {
-            pn_condition_t * cond = pn_connection_condition(app->connection);
+            pn_condition_t * cond = pn_connection_condition(pn_event_connection(event));
             (void) pn_condition_set_name(       cond, "amqp:connection:forced");
             (void) pn_condition_set_description(cond, "Message size exceeded");
-            pn_connection_close(app->connection);
+            pn_connection_close(pn_event_connection(event));
             }
        }
      }
@@ -237,7 +236,6 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    }
    case PN_CONNECTION_REMOTE_OPEN: {
      pn_connection_open(pn_event_connection(event)); /* Complete the open */
-     app->connection = pn_event_connection(event);
      break;
    }
 
