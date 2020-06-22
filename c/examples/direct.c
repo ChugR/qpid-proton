@@ -51,6 +51,7 @@ typedef struct app_data_t {
 
   /* Receiver values */
   int received;
+  pn_connection_t *connection;
 } app_data_t;
 
 static const int BATCH = 1000; /* Batch size for unlimited receive */
@@ -93,6 +94,7 @@ static void send_message(app_data_t *app, pn_link_t *sender) {
   pn_message_free(message);
 }
 
+#if 0
 static void decode_message(pn_rwbytes_t data) {
   pn_message_t *m = pn_message();
   int err = pn_message_decode(m, data.start, data.size);
@@ -110,6 +112,7 @@ static void decode_message(pn_rwbytes_t data) {
     exit_code = 1;
   }
 }
+#endif
 
 /* This function handles events when we are acting as the receiver */
 static void handle_receive(app_data_t *app, pn_event_t* event) {
@@ -140,20 +143,23 @@ static void handle_receive(app_data_t *app, pn_event_t* event) {
        } else if (recv < 0 && recv != PN_EOS) {        /* Unexpected error */
          pn_condition_format(pn_link_condition(l), "broker", "PN_DELIVERY error: %s", pn_code(recv));
          pn_link_close(l);               /* Unexpected error, close the link */
-       } else if (!pn_delivery_partial(d)) { /* Message is complete */
-         decode_message(*m);
-         *m = pn_rwbytes_null;
-         pn_delivery_update(d, PN_ACCEPTED);
-         pn_delivery_settle(d);  /* settle and free d */
-         if (app->message_count == 0) {
-           /* receive forever - see if more credit is needed */
-           if (pn_link_credit(l) < BATCH/2) {
-             pn_link_flow(l, BATCH - pn_link_credit(l));
-           }
-         } else if (++app->received >= app->message_count) {
-           printf("%d messages received\n", app->received);
-           close_all(pn_event_connection(event), app);
-         }
+       } else { /* Message is complete */
+            /* message is coming in. Reject it as oversize. */
+            /* set condition, reject, and settle the incoming delivery */
+            pn_condition_t *lcond = pn_disposition_condition(pn_delivery_local(d));
+            (void) pn_condition_set_name(       lcond, "amqp:link:message-size-exceeded");
+            (void) pn_condition_set_description(lcond, "Message size exceeded");
+            pn_delivery_update(d, PN_REJECTED);
+            pn_delivery_settle(d);
+            /* close the link */
+            pn_link_close(l);
+            /* set condition and close the connection */
+            {
+            pn_condition_t * cond = pn_connection_condition(app->connection);
+            (void) pn_condition_set_name(       cond, "amqp:connection:forced");
+            (void) pn_condition_set_description(cond, "Message size exceeded");
+            pn_connection_close(app->connection);
+            }
        }
      }
      break;
@@ -231,6 +237,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    }
    case PN_CONNECTION_REMOTE_OPEN: {
      pn_connection_open(pn_event_connection(event)); /* Complete the open */
+     app->connection = pn_event_connection(event);
      break;
    }
 

@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct app_data_t {
   const char *host, *port;
@@ -51,22 +52,30 @@ static void check_condition(pn_event_t *e, pn_condition_t *cond) {
     fprintf(stderr, "%s: %s: %s\n", pn_event_type_name(pn_event_type(e)),
             pn_condition_get_name(cond), pn_condition_get_description(cond));
     pn_connection_close(pn_event_connection(e));
-    exit_code = 1;
+    exit_code = 0; /* HACK ALERT */
   }
 }
 
-/* Create a message with a map { "sequence" : number } encode it and return the encoded buffer. */
+/* Create a message with a map { "sequence" : "XXX" } encode it and send it.
+ * And make it big this time.
+ */
+#define BIGSIZE 250
 static void send_message(app_data_t* app, pn_link_t *sender) {
   /* Construct a message with the map { "sequence": app.sent } */
+  char * bufptr;
   pn_data_t* body;
+  bufptr = (char*)malloc((size_t)BIGSIZE);
+  memset((void*)bufptr, 'X', BIGSIZE);
+  bufptr[BIGSIZE-1] = '\0';
   pn_message_clear(app->message);
   body = pn_message_body(app->message);
   pn_data_put_int(pn_message_id(app->message), app->sent); /* Set the message_id also */
   pn_data_put_map(body);
   pn_data_enter(body);
   pn_data_put_string(body, pn_bytes(sizeof("sequence")-1, "sequence"));
-  pn_data_put_int(body, app->sent); /* The sequence number */
+  pn_data_put_string(body, pn_bytes(BIGSIZE-1, bufptr));
   pn_data_exit(body);
+  free(bufptr);
   if (pn_message_send(app->message, sender, &app->message_buffer) < 0) {
     fprintf(stderr, "error sending message: %s\n", pn_error_text(pn_message_error(app->message)));
     exit(1);
@@ -115,7 +124,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
      } else {
        fprintf(stderr, "unexpected delivery state %d\n", (int)pn_delivery_remote_state(d));
        pn_connection_close(pn_event_connection(event));
-       exit_code=1;
+       exit_code=0; /* HACK ALERT - protocol error is success - looking for a crash... */
      }
      break;
    }
@@ -165,12 +174,11 @@ void run(app_data_t *app) {
 int main(int argc, char **argv) {
   struct app_data_t app = {0};
   char addr[PN_MAX_ADDR];
-
   app.container_id = argv[0];   /* Should be unique */
   app.host = (argc > 1) ? argv[1] : "";
   app.port = (argc > 2) ? argv[2] : "amqp";
   app.amqp_address = (argc > 3) ? argv[3] : "examples";
-  app.message_count = (argc > 4) ? atoi(argv[4]) : 10;
+  app.message_count = (argc > 4) ? atoi(argv[4]) : 1;
   app.message = pn_message();
 
   app.proactor = pn_proactor();

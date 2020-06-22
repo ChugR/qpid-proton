@@ -41,6 +41,7 @@ typedef struct app_data_t {
   int received;
   bool finished;
   pn_rwbytes_t msgin;       /* Partially received message */
+  pn_connection_t *connection;
 } app_data_t;
 
 static const int BATCH = 1000; /* Batch size for unlimited receive */
@@ -56,6 +57,7 @@ static void check_condition(pn_event_t *e, pn_condition_t *cond) {
   }
 }
 
+#if 0
 static void decode_message(pn_rwbytes_t data) {
   pn_message_t *m = pn_message();
   int err = pn_message_decode(m, data.start, data.size);
@@ -72,6 +74,7 @@ static void decode_message(pn_rwbytes_t data) {
     exit_code = 1;
   }
 }
+#endif
 
 /* Return true to continue, false to exit */
 static bool handle(app_data_t* app, pn_event_t* event) {
@@ -80,6 +83,7 @@ static bool handle(app_data_t* app, pn_event_t* event) {
    case PN_CONNECTION_INIT: {
      pn_connection_t* c = pn_event_connection(event);
      pn_session_t* s = pn_session(c);
+     app->connection = c;
      pn_connection_set_container(c, app->container_id);
      pn_connection_open(c);
      pn_session_open(s);
@@ -112,25 +116,23 @@ static bool handle(app_data_t* app, pn_event_t* event) {
        } else if (recv < 0 && recv != PN_EOS) {        /* Unexpected error */
          pn_condition_format(pn_link_condition(l), "broker", "PN_DELIVERY error: %s", pn_code(recv));
          pn_link_close(l);               /* Unexpected error, close the link */
-       } else if (!pn_delivery_partial(d)) { /* Message is complete */
-         decode_message(*m);
-         *m = pn_rwbytes_null;  /* Reset the buffer for the next message*/
-         /* Accept the delivery */
-         pn_delivery_update(d, PN_ACCEPTED);
-         pn_delivery_settle(d);  /* settle and free d */
-         if (app->message_count == 0) {
-           /* receive forever - see if more credit is needed */
-           if (pn_link_credit(l) < BATCH/2) {
-             /* Grant enough credit to bring it up to BATCH: */
-             pn_link_flow(l, BATCH - pn_link_credit(l));
-           }
-         } else if (++app->received >= app->message_count) {
-           pn_session_t *ssn = pn_link_session(l);
-           printf("%d messages received\n", app->received);
-           pn_link_close(l);
-           pn_session_close(ssn);
-           pn_connection_close(pn_session_connection(ssn));
-         }
+       } else {
+            /* message is coming in. Reject it as oversize. */
+            /* set condition, reject, and settle the incoming delivery */
+            pn_condition_t *lcond = pn_disposition_condition(pn_delivery_local(d));
+            (void) pn_condition_set_name(       lcond, "amqp:link:message-size-exceeded");
+            (void) pn_condition_set_description(lcond, "Message size exceeded");
+            pn_delivery_update(d, PN_REJECTED);
+            pn_delivery_settle(d);
+            /* close the link */
+            pn_link_close(l);
+            /* set condition and close the connection */
+            {
+            pn_condition_t * cond = pn_connection_condition(app->connection);
+            (void) pn_condition_set_name(       cond, "amqp:connection:forced");
+            (void) pn_condition_set_description(cond, "Message size exceeded");
+            pn_connection_close(app->connection);
+            }
        }
      }
      break;
