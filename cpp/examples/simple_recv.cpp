@@ -44,7 +44,7 @@ std::string getCurrentTimestamp() {
     using std::chrono::system_clock;
     auto currentTime = std::chrono::system_clock::now();
     char buf1[80];
-    char buf2[80];
+    char buf2[120];
     auto transformed = currentTime.time_since_epoch().count() / 1000;
     auto usec = transformed % 1000000;
     std::time_t tt;
